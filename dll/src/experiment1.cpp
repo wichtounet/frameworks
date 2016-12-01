@@ -23,14 +23,16 @@ int main(int /*argc*/, char* /*argv*/ []) {
     using dbn_t = dll::dbn_desc<
         dll::dbn_layers<
             dll::dense_desc<28 * 28, 500>::layer_t,
-            dll::dense_desc<500, 150>::layer_t,
-            dll::dense_desc<150, 10, dll::activation<dll::function::SOFTMAX>>::layer_t>,
+            dll::dense_desc<500, 250>::layer_t,
+            dll::dense_desc<250, 10, dll::activation<dll::function::SOFTMAX>>::layer_t>,
         dll::momentum, dll::batch_size<64>, dll::trainer<dll::sgd_trainer>>::dbn_t;
 
     auto dbn = std::make_unique<dbn_t>();
 
     dbn->initial_momentum = 0.9;
     dbn->momentum = 0.9;
+
+    dbn->display();
 
     auto ft_error = dbn->fine_tune(dataset.training_images, dataset.training_labels, 100);
     std::cout << "ft_error:" << ft_error << std::endl;

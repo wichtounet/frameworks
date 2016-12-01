@@ -24,11 +24,11 @@ int main(int /*argc*/, char* /*argv*/ []) {
 
     using dbn_t = dll::dbn_desc<
         dll::dbn_layers<
-            dll::conv_desc<1, 28, 28, 10, 24, 24>::layer_t,
-            dll::mp_layer_3d_desc<10, 24, 24, 1, 2, 2, dll::weight_type<float>>::layer_t,
-            dll::conv_desc<10, 12, 12, 10, 8, 8>::layer_t,
-            dll::mp_layer_3d_desc<10, 8, 8, 1, 2, 2, dll::weight_type<float>>::layer_t,
-            dll::dense_desc<10 * 4 * 4, 150>::layer_t,
+            dll::conv_desc<1, 28, 28, 8, 24, 24>::layer_t,
+            dll::mp_layer_3d_desc<8, 24, 24, 1, 2, 2, dll::weight_type<float>>::layer_t,
+            dll::conv_desc<8, 12, 12, 8, 8, 8>::layer_t,
+            dll::mp_layer_3d_desc<8, 8, 8, 1, 2, 2, dll::weight_type<float>>::layer_t,
+            dll::dense_desc<8 * 4 * 4, 150>::layer_t,
             dll::dense_desc<150, 10, dll::activation<dll::function::SOFTMAX>>::layer_t>,
         dll::momentum, dll::batch_size<64>, dll::trainer<dll::sgd_trainer>>::dbn_t;
 

@@ -11,8 +11,12 @@
 # Experiment 1 #
 ################
 
+echo "Starting experiment 1"
+
 #  DLL  #
 #########
+
+echo "Starting DLL"
 
 cd dll/
 

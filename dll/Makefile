@@ -76,7 +76,9 @@ $(eval $(call auto_folder_compile,src))
 
 # Generate executables for experiments
 $(eval $(call add_executable,experiment1,src/experiment1.cpp))
+$(eval $(call add_executable,experiment2,src/experiment2.cpp))
 $(eval $(call add_executable_set,experiment1,experiment1))
+$(eval $(call add_executable_set,experiment2,experiment2))
 
 release: release_experiment1
 release_debug: release_debug_experiment1

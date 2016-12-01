@@ -8,7 +8,7 @@
 #=======================================================================
 
 ################
-# Experiment 1 #
+# Experiment 2 #
 ################
 
 #  DLL  #
@@ -20,8 +20,8 @@ cd dll/
 export DLL_BLAS_PKG=mkl-threads
 export ETL_MKL=true
 make clean > /dev/null
-make release/bin/experiment1
-time ./release/bin/experiment1
+make release/bin/experiment2
+time ./release/bin/experiment2
 
 # Cleanup variables
 unset DLL_BLAS_PKG

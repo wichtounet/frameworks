@@ -7,11 +7,11 @@
 #  http://opensource.org/licenses/MIT)
 #=======================================================================
 
-################
-# Experiment 1 #
-################
+######################
+# Experiment 1 (GPU) #
+######################
 
-echo "Starting experiment 1"
+echo "Starting experiment 1 (GPU)"
 
 #  DLL  #
 #########
@@ -23,11 +23,17 @@ cd dll/
 # Set variables for performance
 export DLL_BLAS_PKG=mkl-threads
 export ETL_MKL=true
+export ETL_CUBLAS=true
+export ETL_CUFFT=true
+export ETL_CUDNN=true
 make clean > /dev/null
 make release/bin/experiment1
 time ./release/bin/experiment1
 
 # Cleanup variables
+unset ETL_CUDNN
+unset ETL_CUFFT
+unset ETL_CUBLAS
 unset DLL_BLAS_PKG
 unset ETL_MKL
 
@@ -40,7 +46,7 @@ echo "Starting TensorFlow"
 
 workon tf
 
-CUDA_VISIBLE_DEVICES=-1 python experiment1.py
+CUDA_VISIBLE_DEVICES=0 python experiment1.py
 
 deactivate
 
@@ -55,7 +61,7 @@ echo "Starting Keras"
 
 workon tf
 
-CUDA_VISIBLE_DEVICES=-1 python experiment1.py
+CUDA_VISIBLE_DEVICES=0 python experiment1.py
 
 deactivate
 
@@ -70,7 +76,7 @@ echo "Starting Torch"
 
 source ~/torch/install/bin/torch-activate
 
-th experiment1.lua
+th experiment1_gpu.lua
 
 cd ..
 
@@ -81,6 +87,7 @@ echo "Starting DeepLearning4j"
 
 cd dl4j
 
+export DL4J_MODE=cuda-8.0
 mvn clean install > /dev/null
 
 cd target/classes
@@ -99,6 +106,6 @@ cd caffe
 echo "Starting Caffe"
 
 export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
-$CAFFE_ROOT/build/tools/caffe train --solver=experiment1_solver.prototxt
+$CAFFE_ROOT/build/tools/caffe train --solver=experiment1_solver_gpu.prototxt
 
 cd ..

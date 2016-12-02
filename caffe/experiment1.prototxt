@@ -1,4 +1,4 @@
-name: "Experiment 2"
+name: "Experiment 1"
 layer {
   name: "mnist"
   type: "Data"

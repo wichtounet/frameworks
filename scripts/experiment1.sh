@@ -30,3 +30,15 @@ time ./release/bin/experiment1
 # Cleanup variables
 unset DLL_BLAS_PKG
 unset ETL_MKL
+
+#  Caffe  #
+###########
+
+cd caffe
+
+echo "Starting Caffe"
+
+export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
+$CAFFE_ROOT/build/tools/caffe train --solver=experiment1_solver.prototxt
+
+cd ..

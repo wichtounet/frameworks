@@ -1,6 +1,7 @@
-require 'torch'
-require 'nn'
+require 'cutorch'
+require 'cunn'
 require 'optim'
+
 mnist = require 'mnist'
 
 trainset = mnist.traindataset()
@@ -23,7 +24,10 @@ sgd_params = {
 }
 
 model:add(nn.LogSoftMax())
+model:cuda();
+
 criterion = nn.ClassNLLCriterion()
+criterion:cuda();
 
 x, dl_dx = model:getParameters()
 
@@ -39,8 +43,8 @@ step = function(batch_size)
     for t = 1,trainset.size,batch_size do
         -- setup inputs and targets for this mini-batch
         local size = math.min(t + batch_size - 1, trainset.size) - t
-        local inputs = torch.Tensor(size, 28, 28)
-        local targets = torch.Tensor(size)
+        local inputs = torch.CudaTensor(size, 28, 28)
+        local targets = torch.CudaTensor(size)
         for i = 1,size do
             local input = trainset.data[shuffle[i+t]]
             local target = trainset.label[shuffle[i+t]]
@@ -80,12 +84,15 @@ eval = function(dataset, batch_size)
     for i = 1,dataset.size,batch_size do
         local size = math.min(i + batch_size - 1, dataset.size) - i
         local inputs = dataset.data[{{i,i+size-1}}]
-        local targets = dataset.label[{{i,i+size-1}}]:long()
         local outputs = model:forward(inputs)
-        local _, indices = torch.max(outputs, 2)
-        indices:add(-1)
-        local guessed_right = indices:eq(targets):sum()
-        count = count + guessed_right
+        local targets = dataset.label[{{i,i+size-1}}]:long()
+
+        for j = 1, size do
+            local output = outputs[j]
+            local _, index = torch.max(output, 1)
+            local label = index[1] - 1
+            if label == targets[j] then count = count + 1 end
+        end
     end
 
     return count / dataset.size
@@ -93,8 +100,11 @@ end
 
 max_iters = 100
 
-trainset.data = trainset.data:double()
-testset.data = testset.data:double()
+trainset.data = trainset.data:cuda()
+testset.data = testset.data:cuda()
+
+trainset.label = trainset.label:cuda()
+testset.label = testset.label:cuda()
 
 print("Start training")
 

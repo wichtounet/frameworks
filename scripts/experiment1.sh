@@ -64,13 +64,30 @@ cd ..
 #  Torch  #
 ###########
 
-cd troch
+cd torch
 
-echo "Starting Troch"
+echo "Starting Torch"
 
 source ~/torch/install/bin/torch-activate
 
 th experiment1.lua
+
+cd ..
+
+#  DeepLearning4J  #
+####################
+
+echo "Starting DeepLearning4j"
+
+cd dl4j
+
+mvn clean install > /dev/null
+
+cd target/classes
+
+java -cp ../ihatejava-0.7-SNAPSHOT-bin.jar wicht.experiment1
+
+cd ../..
 
 cd ..
 

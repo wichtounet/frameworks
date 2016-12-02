@@ -31,6 +31,21 @@ time ./release/bin/experiment1
 unset DLL_BLAS_PKG
 unset ETL_MKL
 
+#  TF  #
+########
+
+cd tf
+
+echo "Starting TensorFlow"
+
+workon tf
+
+CUDA_VISIBLE_DEVICES=-1 python experiment1.py
+
+deactivate
+
+cd ..
+
 #  Caffe  #
 ###########
 

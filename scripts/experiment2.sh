@@ -11,7 +11,10 @@
 # Experiment 2 #
 ################
 
+DIR=`pwd`
+
 echo "Starting experiment 1"
+echo "In directory $DIR"
 
 #  DLL  #
 #########
@@ -30,3 +33,17 @@ time ./release/bin/experiment2
 # Cleanup variables
 unset DLL_BLAS_PKG
 unset ETL_MKL
+
+cd ..
+
+#  Caffe  #
+###########
+
+cd caffe
+
+echo "Starting Caffe"
+
+export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
+$CAFFE_ROOT/build/tools/caffe train --solver=experiment2_solver.prototxt
+
+cd ..

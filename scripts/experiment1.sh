@@ -61,6 +61,19 @@ deactivate
 
 cd ..
 
+#  Torch  #
+###########
+
+cd troch
+
+echo "Starting Troch"
+
+source ~/torch/install/bin/torch-activate
+
+th experiment1.lua
+
+cd ..
+
 #  Caffe  #
 ###########
 

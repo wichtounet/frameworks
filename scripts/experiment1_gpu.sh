@@ -24,7 +24,6 @@ cd dll/
 export DLL_BLAS_PKG=mkl-threads
 export ETL_MKL=true
 export ETL_CUBLAS=true
-export ETL_CUFFT=true
 export ETL_CUDNN=true
 make clean > /dev/null
 make release/bin/experiment1
@@ -32,7 +31,6 @@ time ./release/bin/experiment1
 
 # Cleanup variables
 unset ETL_CUDNN
-unset ETL_CUFFT
 unset ETL_CUBLAS
 unset DLL_BLAS_PKG
 unset ETL_MKL

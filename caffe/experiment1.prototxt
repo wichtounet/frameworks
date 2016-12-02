@@ -12,7 +12,7 @@ layer {
   }
   data_param {
     source: "/home/wichtounet/dev/caffe-cpu/examples/mnist/mnist_train_lmdb"
-    batch_size: 64
+    batch_size: 100
     backend: LMDB
   }
 }
@@ -34,77 +34,9 @@ layer {
   }
 }
 layer {
-  name: "conv1"
-  type: "Convolution"
-  bottom: "data"
-  top: "conv1"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 1
-  }
-  convolution_param {
-    num_output: 8
-    kernel_size: 5
-    stride: 1
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-    }
-  }
-}
-layer {
-  name: "pool1"
-  type: "Pooling"
-  bottom: "conv1"
-  top: "pool1"
-  pooling_param {
-    pool: MAX
-    kernel_size: 2
-    stride: 2
-  }
-}
-layer {
-  name: "conv2"
-  type: "Convolution"
-  bottom: "pool1"
-  top: "conv2"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 1
-  }
-  convolution_param {
-    num_output: 8
-    kernel_size: 5
-    stride: 1
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-    }
-  }
-}
-layer {
-  name: "pool2"
-  type: "Pooling"
-  bottom: "conv2"
-  top: "pool2"
-  pooling_param {
-    pool: MAX
-    kernel_size: 2
-    stride: 2
-  }
-}
-layer {
   name: "ip1"
   type: "InnerProduct"
-  bottom: "pool2"
+  bottom: "data"
   top: "ip1"
   param {
     lr_mult: 1
@@ -113,7 +45,7 @@ layer {
     lr_mult: 1
   }
   inner_product_param {
-    num_output: 250
+    num_output: 500
     weight_filler {
       type: "xavier"
     }
@@ -123,8 +55,8 @@ layer {
   }
 }
 layer {
-  name: "relu1"
-  type: "ReLU"
+  name: "sigmoid1"
+  type: "Sigmoid"
   bottom: "ip1"
   top: "ip1"
 }
@@ -133,6 +65,33 @@ layer {
   type: "InnerProduct"
   bottom: "ip1"
   top: "ip2"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 1
+  }
+  inner_product_param {
+    num_output: 500
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "sigmoid2"
+  type: "Sigmoid"
+  bottom: "ip2"
+  top: "ip2"
+}
+layer {
+  name: "ip3"
+  type: "InnerProduct"
+  bottom: "ip2"
+  top: "ip3"
   param {
     lr_mult: 1
   }
@@ -152,7 +111,7 @@ layer {
 layer {
   name: "accuracy"
   type: "Accuracy"
-  bottom: "ip2"
+  bottom: "ip3"
   bottom: "label"
   top: "accuracy"
   include {
@@ -162,7 +121,7 @@ layer {
 layer {
   name: "loss"
   type: "SoftmaxWithLoss"
-  bottom: "ip2"
+  bottom: "ip3"
   bottom: "label"
   top: "loss"
 }

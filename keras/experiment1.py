@@ -10,7 +10,7 @@ from keras.layers.core import Dense, Dropout, Activation
 from keras.optimizers import SGD, Adam, RMSprop
 from keras.utils import np_utils
 
-batch_size = 64
+batch_size = 100
 nb_classes = 10
 nb_epoch = 100
 

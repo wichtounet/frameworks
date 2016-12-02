@@ -25,7 +25,7 @@ int main(int /*argc*/, char* /*argv*/ []) {
             dll::dense_desc<28 * 28, 500>::layer_t,
             dll::dense_desc<500, 250>::layer_t,
             dll::dense_desc<250, 10, dll::activation<dll::function::SOFTMAX>>::layer_t>,
-        dll::momentum, dll::batch_size<64>, dll::trainer<dll::sgd_trainer>>::dbn_t;
+        dll::momentum, dll::batch_size<100>, dll::trainer<dll::sgd_trainer>>::dbn_t;
 
     auto dbn = std::make_unique<dbn_t>();
 

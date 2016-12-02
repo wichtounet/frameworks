@@ -25,9 +25,9 @@ public class experiment1 {
         //number of rows and columns in the input pictures
         final int numRows = 28;
         final int numColumns = 28;
-        int outputNum = 10; // number of output classes
-        int batchSize = 64; // batch size for each epoch
-        int rngSeed = 123; // random number seed for reproducibility
+        int outputNum = 10;  // number of output classes
+        int batchSize = 100; // batch size for each epoch
+        int rngSeed = 123;   // random number seed for reproducibility
         int numEpochs = 100; // number of epochs to perform
 
         //Get the DataSetIterators:

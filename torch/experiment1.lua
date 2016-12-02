@@ -34,7 +34,7 @@ step = function(batch_size)
     local current_loss = 0
     local count = 0
     local shuffle = torch.randperm(trainset.size)
-    batch_size = batch_size or 64
+    batch_size = batch_size or 100
 
     for t = 1,trainset.size,batch_size do
         -- setup inputs and targets for this mini-batch
@@ -75,7 +75,7 @@ end
 
 eval = function(dataset, batch_size)
     local count = 0
-    batch_size = batch_size or 64
+    batch_size = batch_size or 100
 
     for i = 1,dataset.size,batch_size do
         local size = math.min(i + batch_size - 1, dataset.size) - i

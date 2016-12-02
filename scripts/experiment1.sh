@@ -46,6 +46,21 @@ deactivate
 
 cd ..
 
+#  Keras  #
+###########
+
+cd keras
+
+echo "Starting Keras"
+
+workon tf
+
+CUDA_VISIBLE_DEVICES=-1 python experiment1.py
+
+deactivate
+
+cd ..
+
 #  Caffe  #
 ###########
 

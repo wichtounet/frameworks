@@ -11,6 +11,9 @@
 # Experiment 1 (CPU) #
 ######################
 
+exp=1
+mode=cpu
+
 echo "Starting experiment 1 (CPU)"
 
 #  DLL  #
@@ -18,18 +21,25 @@ echo "Starting experiment 1 (CPU)"
 
 echo "Starting DLL"
 
+mkdir -p results/$exp/$mode/dll
+
 cd dll/
 
 # Set variables for performance
 export DLL_BLAS_PKG=mkl-threads
 export ETL_MKL=true
 make clean > /dev/null
-make release/bin/experiment1
-time ./release/bin/experiment1
+make release/bin/experiment1 > /dev/null
+before=`date "+%s"`
+./release/bin/experiment1 | tee ../results/$exp/$mode/dll/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 # Cleanup variables
 unset DLL_BLAS_PKG
 unset ETL_MKL
+
+cd ..
 
 #  TF  #
 ########
@@ -38,9 +48,14 @@ cd tf
 
 echo "Starting TensorFlow"
 
-workon tf
+mkdir -p results/$exp/$mode/tf
 
-CUDA_VISIBLE_DEVICES=-1 python experiment1.py
+source ~/.virtualenvs/tf/bin/activate
+
+before=`date "+%s"`
+CUDA_VISIBLE_DEVICES=-1 python experiment1.py | tee ../results/$exp/$mode/tf/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 deactivate
 
@@ -53,24 +68,16 @@ cd keras
 
 echo "Starting Keras"
 
-workon tf
+mkdir -p results/$exp/$mode/keras
 
-CUDA_VISIBLE_DEVICES=-1 python experiment1.py
+source ~/.virtualenvs/tf/bin/activate
+
+before=`date "+%s"`
+CUDA_VISIBLE_DEVICES=-1 python experiment1.py | tee ../results/$exp/$mode/keras/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 deactivate
-
-cd ..
-
-#  Torch  #
-###########
-
-cd torch
-
-echo "Starting Torch"
-
-source ~/torch/install/bin/torch-activate
-
-th experiment1.lua
 
 cd ..
 
@@ -79,6 +86,8 @@ cd ..
 
 echo "Starting DeepLearning4j"
 
+mkdir -p results/$exp/$mode/dl4j
+
 cd dl4j
 
 export DL4J_MODE=native
@@ -86,7 +95,10 @@ mvn clean install > /dev/null
 
 cd target/classes
 
-java -cp ../ihatejava-0.7-SNAPSHOT-bin.jar wicht.experiment1
+before=`date "+%s"`
+java -cp ../ihatejava-0.7-SNAPSHOT-bin.jar wicht.experiment1 | tee ../results/$exp/$mode/dl4j/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 cd ../..
 
@@ -99,7 +111,31 @@ cd caffe
 
 echo "Starting Caffe"
 
+mkdir -p results/$exp/$mode/caffe
+
 export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
-$CAFFE_ROOT/build/tools/caffe train --solver=experiment1_solver.prototxt
+
+before=`date "+%s"`
+$CAFFE_ROOT/build/tools/caffe train --solver=experiment1_solver.prototxt | tee ../results/$exp/$mode/caffe/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
+
+cd ..
+
+#  Torch  #
+###########
+
+cd torch
+
+echo "Starting Torch"
+
+mkdir -p results/$exp/$mode/torch
+
+source ~/torch/install/bin/torch-activate
+
+before=`date "+%s"`
+th experiment1.lua | tee ../results/$exp/$mode/torch/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 cd ..

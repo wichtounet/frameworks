@@ -65,19 +65,6 @@ deactivate
 
 cd ..
 
-#  Torch  #
-###########
-
-cd torch
-
-echo "Starting Torch"
-
-source ~/torch/install/bin/torch-activate
-
-th experiment1_gpu.lua
-
-cd ..
-
 #  DeepLearning4J  #
 ####################
 
@@ -105,5 +92,18 @@ echo "Starting Caffe"
 
 export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
 $CAFFE_ROOT/build/tools/caffe train --solver=experiment1_solver_gpu.prototxt
+
+cd ..
+
+#  Torch  #
+###########
+
+cd torch
+
+echo "Starting Torch"
+
+source ~/torch/install/bin/torch-activate
+
+th experiment1_gpu.lua
 
 cd ..

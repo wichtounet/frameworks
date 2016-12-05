@@ -28,7 +28,7 @@ public class experiment1 {
         int outputNum = 10;  // number of output classes
         int batchSize = 100; // batch size for each epoch
         int rngSeed = 123;   // random number seed for reproducibility
-        int numEpochs = 100; // number of epochs to perform
+        int numEpochs = 50; // number of epochs to perform
 
         //Get the DataSetIterators:
         DataSetIterator mnistTrain = new MnistDataSetIterator(batchSize, true, rngSeed);

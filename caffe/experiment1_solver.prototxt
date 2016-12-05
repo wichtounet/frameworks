@@ -20,6 +20,6 @@ lr_policy: "fixed"
 display: 600
 
 # The maximum number of iterations
-max_iter: 60000
+max_iter: 30000
 
 solver_mode: CPU

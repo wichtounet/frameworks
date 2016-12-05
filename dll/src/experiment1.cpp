@@ -34,7 +34,7 @@ int main(int /*argc*/, char* /*argv*/ []) {
 
     dbn->display();
 
-    auto ft_error = dbn->fine_tune(dataset.training_images, dataset.training_labels, 100);
+    auto ft_error = dbn->fine_tune(dataset.training_images, dataset.training_labels, 50);
     std::cout << "ft_error:" << ft_error << std::endl;
 
     auto test_error = dll::test_set(dbn, dataset.test_images, dataset.test_labels, dll::predictor());

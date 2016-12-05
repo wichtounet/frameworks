@@ -98,7 +98,7 @@ eval = function(dataset, batch_size)
     return count / dataset.size
 end
 
-max_iters = 100
+max_iters = 50
 
 trainset.data = trainset.data:cuda()
 testset.data = testset.data:cuda()

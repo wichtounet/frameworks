@@ -60,8 +60,8 @@ for epoch in range(training_epochs):
 
     feeds = {x: batch_xs, y: batch_ys}
     train_acc = sess.run(accr, feed_dict=feeds)
-    print ("Epoch: %03d/%03d cost: %.9f acc: %.3f" % (epoch, training_epochs, avg_cost, train_acc))
+    print ("Epoch: %03d/%03d cost: %.9f acc: %.5f" % (epoch, training_epochs, avg_cost, train_acc))
 
 feeds = {x: mnist.test.images, y: mnist.test.labels}
 test_acc = sess.run(accr, feed_dict=feeds)
-print ("TEST ACCURACY: %.3f" % (test_acc))
+print ("TEST ACCURACY: %.5f" % (test_acc))

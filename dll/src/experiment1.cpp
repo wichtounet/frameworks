@@ -31,6 +31,7 @@ int main(int /*argc*/, char* /*argv*/ []) {
 
     dbn->initial_momentum = 0.9;
     dbn->momentum = 0.9;
+    dbn->goal = -1.0; // Don't stop
 
     dbn->display();
 

@@ -17,15 +17,34 @@ layer {
   }
 }
 layer {
-  name: "mnist"
+  name: "mnist-train"
   type: "Data"
   top: "data"
   top: "label"
   include {
     phase: TEST
+    stage: "test-on-train"
   }
   transform_param {
-    scale: 0.00390625
+    scale: 0.0039215684
+  }
+  data_param {
+    source: "/home/wichtounet/dev/caffe-cpu/examples/mnist/mnist_train_lmdb"
+    batch_size: 100
+    backend: LMDB
+  }
+}
+layer {
+  name: "mnist-test"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+    stage: "test-on-test"
+  }
+  transform_param {
+    scale: 0.0039215684
   }
   data_param {
     source: "/home/wichtounet/dev/caffe-cpu/examples/mnist/mnist_test_lmdb"
@@ -72,7 +91,7 @@ layer {
     lr_mult: 1
   }
   inner_product_param {
-    num_output: 500
+    num_output: 250
     weight_filler {
       type: "xavier"
     }
@@ -107,6 +126,12 @@ layer {
       type: "constant"
     }
   }
+}
+layer {
+  name: "sigmoid3"
+  type: "Sigmoid"
+  bottom: "ip3"
+  top: "ip3"
 }
 layer {
   name: "accuracy"

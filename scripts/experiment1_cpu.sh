@@ -44,11 +44,11 @@ cd ..
 #  TF  #
 ########
 
-cd tf
-
 echo "Starting TensorFlow"
 
 mkdir -p results/$exp/$mode/tf
+
+cd tf
 
 source ~/.virtualenvs/tf/bin/activate
 
@@ -64,11 +64,11 @@ cd ..
 #  Keras  #
 ###########
 
-cd keras
-
 echo "Starting Keras"
 
 mkdir -p results/$exp/$mode/keras
+
+cd keras
 
 source ~/.virtualenvs/tf/bin/activate
 
@@ -107,11 +107,11 @@ cd ..
 #  Caffe  #
 ###########
 
-cd caffe
-
 echo "Starting Caffe"
 
 mkdir -p results/$exp/$mode/caffe
+
+cd caffe
 
 export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
 
@@ -125,11 +125,11 @@ cd ..
 #  Torch  #
 ###########
 
-cd torch
-
 echo "Starting Torch"
 
 mkdir -p results/$exp/$mode/torch
+
+cd torch
 
 source ~/torch/install/bin/torch-activate
 

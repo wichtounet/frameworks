@@ -5,7 +5,7 @@ net: "experiment1.prototxt"
 # covering the full 10,000 testing images.
 test_iter: 100
 # Carry out testing every 500 training iterations.
-test_interval: 600
+test_interval: 30000
 
 # The base learning rate, momentum and the weight decay of the network.
 base_lr: 0.1

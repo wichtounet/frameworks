@@ -100,22 +100,15 @@ print("Start training")
 
 do
     local last_accuracy = 0
-    local decreasing = 0
-    local threshold = 1 -- how many deacreasing epochs we allow
+
     for i = 1,max_iters do
         local loss = step()
-        local accuracy = eval(testset)
-        print(string.format('Epoch: %d loss: %4f test acc: %4f', i, loss, accuracy))
-
-        if accuracy < last_accuracy then
-            if decreasing > threshold then break end
-            decreasing = decreasing + 1
-        else
-            decreasing = 0
-        end
+        local accuracy = eval(trainset)
+        print(string.format('Epoch: %d loss: %4f train acc: %5f', i, loss, accuracy))
 
         last_accuracy = accuracy
     end
 end
 
-eval(testset)
+local accuracy = eval(testset)
+print(string.format('Test acc: %5f', accuracy))

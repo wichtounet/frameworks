@@ -64,7 +64,7 @@ public class experiment1 {
 
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
         model.init();
-        model.setListeners(new ScoreIterationListener(940));  //print the score with every iteration
+        model.setListeners(new ScoreIterationListener(600));  //print the score with every iteration
 
         log.info("Train model....");
         for( int i=0; i<numEpochs; i++ ){

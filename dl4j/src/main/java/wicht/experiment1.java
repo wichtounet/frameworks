@@ -70,7 +70,24 @@ public class experiment1 {
         for( int i=0; i<numEpochs; i++ ){
         	log.info("Epoch " + i);
             model.fit(mnistTrain);
+
+            // We need the train error after each epoch
+
+            mnistTrain.reset();
+
+            Evaluation eval = new Evaluation(outputNum); //create an evaluation object with 10 possible classes
+            while(mnistTrain.hasNext()){
+                DataSet next = mnistTrain.next();
+                INDArray output = model.output(next.getFeatureMatrix()); //get the networks prediction
+                eval.eval(next.getLabels(), output); //check the prediction against the true class
+            }
+
+            log.info("Train accuracy:" + eval.accuracy());
+
+            mnistTrain.reset();
         }
+
+        // After training, we need the test error
 
         log.info("Evaluate model....");
         Evaluation eval = new Evaluation(outputNum); //create an evaluation object with 10 possible classes
@@ -81,6 +98,5 @@ public class experiment1 {
         }
 
         log.info(eval.stats());
-        log.info("****************Example finished********************");
     }
 }

@@ -30,12 +30,12 @@ export DLL_BLAS_PKG=mkl-threads
 export ETL_MKL=true
 export ETL_CUBLAS=true
 export ETL_CUDNN=true
-#make clean > /dev/null
-#make release/bin/experiment1 > /dev/null
-#before=`date "+%s"`
-#./release/bin/experiment1 | tee ../results/$exp/$mode/dll/raw_results
-#after=`date "+%s"`
-#echo "Time: $((after - before))"
+make clean > /dev/null
+make release/bin/experiment1 > /dev/null
+before=`date "+%s"`
+./release/bin/experiment1 | tee ../results/$exp/$mode/dll/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 # Cleanup variables
 unset ETL_CUDNN

@@ -11,6 +11,9 @@
 # Experiment 1 (GPU) #
 ######################
 
+exp=1
+mode=gpu
+
 echo "Starting experiment 1 (GPU)"
 
 #  DLL  #
@@ -26,14 +29,17 @@ export ETL_MKL=true
 export ETL_CUBLAS=true
 export ETL_CUDNN=true
 make clean > /dev/null
-make release/bin/experiment1
-time ./release/bin/experiment1
+make release/bin/experiment1 > /dev/null
+before=`date "+%s"`
+./release/bin/experiment1 | tee ../results/$exp/$mode/dll/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 # Cleanup variables
 unset ETL_CUDNN
 unset ETL_CUBLAS
-unset DLL_BLAS_PKG
 unset ETL_MKL
+unset DLL_BLAS_PKG
 
 #  TF  #
 ########
@@ -44,7 +50,10 @@ echo "Starting TensorFlow"
 
 workon tf
 
-CUDA_VISIBLE_DEVICES=0 python experiment1.py
+before=`date "+%s"`
+CUDA_VISIBLE_DEVICES=0 python experiment1.py | tee ../results/$exp/$mode/tf/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 deactivate
 
@@ -59,7 +68,10 @@ echo "Starting Keras"
 
 workon tf
 
-CUDA_VISIBLE_DEVICES=0 python experiment1.py
+before=`date "+%s"`
+CUDA_VISIBLE_DEVICES=0 python experiment1.py | tee ../results/$exp/$mode/keras/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 deactivate
 
@@ -77,7 +89,10 @@ mvn clean install > /dev/null
 
 cd target/classes
 
-java -cp ../ihatejava-0.7-SNAPSHOT-bin.jar wicht.experiment1
+before=`date "+%s"`
+java -cp ../ihatejava-0.7-SNAPSHOT-bin.jar wicht.experiment1 | tee ../results/$exp/$mode/dl4j/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 cd ../..
 
@@ -90,8 +105,11 @@ cd caffe
 
 echo "Starting Caffe"
 
-export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
 $CAFFE_ROOT/build/tools/caffe train --solver=experiment1_solver_gpu.prototxt
+before=`date "+%s"`
+$CAFFE_ROOT/build/tools/caffe train --solver=experiment1_solver_gpu.prototxt | tee ../results/$exp/$mode/caffe/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 cd ..
 
@@ -104,6 +122,9 @@ echo "Starting Torch"
 
 source ~/torch/install/bin/torch-activate
 
-th experiment1_gpu.lua
+before=`date "+%s"`
+th experiment1_gpu.lua | tee ../results/$exp/$mode/torch/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
 
 cd ..

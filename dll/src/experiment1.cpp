@@ -29,6 +29,7 @@ int main(int /*argc*/, char* /*argv*/ []) {
 
     auto dbn = std::make_unique<dbn_t>();
 
+    dbn->learning_rate = 0.1;
     dbn->initial_momentum = 0.9;
     dbn->momentum = 0.9;
     dbn->goal = -1.0; // Don't stop

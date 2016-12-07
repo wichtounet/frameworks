@@ -99,14 +99,10 @@ testset.data = testset.data:double()
 print("Start training")
 
 do
-    local last_accuracy = 0
-
     for i = 1,max_iters do
         local loss = step()
         local accuracy = eval(trainset)
         print(string.format('Epoch: %d loss: %4f train acc: %5f', i, loss, accuracy))
-
-        last_accuracy = accuracy
     end
 end
 

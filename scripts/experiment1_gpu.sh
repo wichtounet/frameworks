@@ -21,6 +21,8 @@ echo "Starting experiment 1 (GPU)"
 
 echo "Starting DLL"
 
+mkdir -p results/$exp/$mode/dll
+
 cd dll/
 
 # Set variables for performance
@@ -28,12 +30,12 @@ export DLL_BLAS_PKG=mkl-threads
 export ETL_MKL=true
 export ETL_CUBLAS=true
 export ETL_CUDNN=true
-make clean > /dev/null
-make release/bin/experiment1 > /dev/null
-before=`date "+%s"`
-./release/bin/experiment1 | tee ../results/$exp/$mode/dll/raw_results
-after=`date "+%s"`
-echo "Time: $((after - before))"
+#make clean > /dev/null
+#make release/bin/experiment1 > /dev/null
+#before=`date "+%s"`
+#./release/bin/experiment1 | tee ../results/$exp/$mode/dll/raw_results
+#after=`date "+%s"`
+#echo "Time: $((after - before))"
 
 # Cleanup variables
 unset ETL_CUDNN
@@ -41,14 +43,18 @@ unset ETL_CUBLAS
 unset ETL_MKL
 unset DLL_BLAS_PKG
 
+cd ..
+
 #  TF  #
 ########
 
-cd tf
-
 echo "Starting TensorFlow"
 
-workon tf
+mkdir -p results/$exp/$mode/tf
+
+cd tf
+
+source ~/.virtualenvs/tf/bin/activate
 
 before=`date "+%s"`
 CUDA_VISIBLE_DEVICES=0 python experiment1.py | tee ../results/$exp/$mode/tf/raw_results
@@ -62,11 +68,13 @@ cd ..
 #  Keras  #
 ###########
 
-cd keras
-
 echo "Starting Keras"
 
-workon tf
+mkdir -p results/$exp/$mode/keras
+
+cd keras
+
+source ~/.virtualenvs/tf/bin/activate
 
 before=`date "+%s"`
 CUDA_VISIBLE_DEVICES=0 python experiment1.py | tee ../results/$exp/$mode/keras/raw_results
@@ -81,6 +89,8 @@ cd ..
 ####################
 
 echo "Starting DeepLearning4j"
+
+mkdir -p results/$exp/$mode/dl4j
 
 cd dl4j
 
@@ -101,9 +111,13 @@ cd ..
 #  Caffe  #
 ###########
 
+echo "Starting Caffe"
+
+mkdir -p results/$exp/$mode/caffe
+
 cd caffe
 
-echo "Starting Caffe"
+export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
 
 $CAFFE_ROOT/build/tools/caffe train --solver=experiment1_solver_gpu.prototxt
 before=`date "+%s"`
@@ -116,9 +130,11 @@ cd ..
 #  Torch  #
 ###########
 
-cd torch
-
 echo "Starting Torch"
+
+mkdir -p results/$exp/$mode/torch
+
+cd torch
 
 source ~/torch/install/bin/torch-activate
 

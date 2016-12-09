@@ -12,20 +12,39 @@ layer {
   }
   data_param {
     source: "/home/wichtounet/dev/caffe-cpu/examples/mnist/mnist_train_lmdb"
-    batch_size: 64
+    batch_size: 100
     backend: LMDB
   }
 }
 layer {
-  name: "mnist"
+  name: "mnist-train"
   type: "Data"
   top: "data"
   top: "label"
   include {
     phase: TEST
+    stage: "test-on-train"
   }
   transform_param {
-    scale: 0.00390625
+    scale: 0.0039215684
+  }
+  data_param {
+    source: "/home/wichtounet/dev/caffe-cpu/examples/mnist/mnist_train_lmdb"
+    batch_size: 100
+    backend: LMDB
+  }
+}
+layer {
+  name: "mnist-test"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+    stage: "test-on-test"
+  }
+  transform_param {
+    scale: 0.0039215684
   }
   data_param {
     source: "/home/wichtounet/dev/caffe-cpu/examples/mnist/mnist_test_lmdb"
@@ -38,12 +57,6 @@ layer {
   type: "Convolution"
   bottom: "data"
   top: "conv1"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 8
     kernel_size: 5
@@ -55,6 +68,12 @@ layer {
       type: "constant"
     }
   }
+}
+layer {
+  name: "sigmoid1"
+  type: "Sigmoid"
+  bottom: "conv1"
+  top: "conv1"
 }
 layer {
   name: "pool1"
@@ -72,12 +91,6 @@ layer {
   type: "Convolution"
   bottom: "pool1"
   top: "conv2"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 8
     kernel_size: 5
@@ -89,6 +102,12 @@ layer {
       type: "constant"
     }
   }
+}
+layer {
+  name: "sigmoid2"
+  type: "Sigmoid"
+  bottom: "conv2"
+  top: "conv2"
 }
 layer {
   name: "pool2"
@@ -106,14 +125,8 @@ layer {
   type: "InnerProduct"
   bottom: "pool2"
   top: "ip1"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 1
-  }
   inner_product_param {
-    num_output: 250
+    num_output: 150
     weight_filler {
       type: "xavier"
     }
@@ -123,8 +136,8 @@ layer {
   }
 }
 layer {
-  name: "relu1"
-  type: "ReLU"
+  name: "sigmoid3"
+  type: "Sigmoid"
   bottom: "ip1"
   top: "ip1"
 }
@@ -133,12 +146,6 @@ layer {
   type: "InnerProduct"
   bottom: "ip1"
   top: "ip2"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 1
-  }
   inner_product_param {
     num_output: 10
     weight_filler {
@@ -148,6 +155,12 @@ layer {
       type: "constant"
     }
   }
+}
+layer {
+  name: "sigmoid4"
+  type: "Sigmoid"
+  bottom: "ip2"
+  top: "ip2"
 }
 layer {
   name: "accuracy"

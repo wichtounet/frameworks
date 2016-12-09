@@ -30,16 +30,18 @@ int main(int /*argc*/, char* /*argv*/ []) {
             dll::mp_layer_3d_desc<8, 8, 8, 1, 2, 2, dll::weight_type<float>>::layer_t,
             dll::dense_desc<8 * 4 * 4, 150>::layer_t,
             dll::dense_desc<150, 10, dll::activation<dll::function::SOFTMAX>>::layer_t>,
-        dll::momentum, dll::batch_size<64>, dll::trainer<dll::sgd_trainer>>::dbn_t;
+        dll::momentum, dll::batch_size<100>, dll::trainer<dll::sgd_trainer>>::dbn_t;
 
     auto dbn = std::make_unique<dbn_t>();
 
+    dbn->learning_rate = 0.1;
     dbn->initial_momentum = 0.9;
     dbn->momentum = 0.9;
+    dbn->goal = -1.0;
 
     dbn->display();
 
-    auto ft_error = dbn->fine_tune(dataset.training_images, dataset.training_labels, 100);
+    auto ft_error = dbn->fine_tune(dataset.training_images, dataset.training_labels, 50);
     std::cout << "ft_error:" << ft_error << std::endl;
 
     auto test_error = dll::test_set(dbn, dataset.test_images, dataset.test_labels, dll::predictor());

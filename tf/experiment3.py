@@ -4,6 +4,7 @@ import input_data
 
 def sample_prob(probs):
     return tf.floor(probs + tf.random_uniform(tf.shape(probs), 0, 1))
+    # return tf.select((tf.random_uniform(tf.shape(probs), 0, 1) - probs) > 0.5, tf.ones(tf.shape(probs)), tf.zeros(tf.shape(probs)))
 
 learning_rate = 0.1
 momentum = 0.9
@@ -23,16 +24,21 @@ rbm_w_inc = tf.placeholder("float", [784, 500])
 rbm_vb_inc = tf.placeholder("float", [784])
 rbm_hb_inc = tf.placeholder("float", [500])
 
-h0 = sample_prob(tf.nn.sigmoid(tf.matmul(X, rbm_w) + rbm_hb))
-v1 = sample_prob(tf.nn.sigmoid(tf.matmul(h0, tf.transpose(rbm_w)) + rbm_vb))
-h1 = tf.nn.sigmoid(tf.matmul(v1, rbm_w) + rbm_hb)
+h0_a = tf.nn.sigmoid(tf.matmul(X, rbm_w) + rbm_hb)
+h0 = sample_prob(h0_a)
 
-w_positive_grad = tf.matmul(tf.transpose(X), h0)
-w_negative_grad = tf.matmul(tf.transpose(v1), h1)
+v1_a = tf.nn.sigmoid(tf.matmul(h0, tf.transpose(rbm_w)) + rbm_vb)
+v1 = sample_prob(v1_a)
+
+h1_a = tf.nn.sigmoid(tf.matmul(v1, rbm_w) + rbm_hb)
+# h1 = sample_prob(h1_a)
+
+w_positive_grad = tf.matmul(tf.transpose(X), h0_a)
+w_negative_grad = tf.matmul(tf.transpose(v1_a), h1_a)
 
 grad_w = (w_positive_grad - w_negative_grad) / tf.to_float(tf.shape(X)[0])
-grad_vb = tf.reduce_mean(X - v1, 0)
-grad_hb = tf.reduce_mean(h0 - h1, 0)
+grad_vb = tf.reduce_mean(X - v1_a, 0)
+grad_hb = tf.reduce_mean(h0 - h1_a, 0)
 
 update_w_inc = momentum * rbm_w_inc + (learning_rate / batchsize) * grad_w
 update_vb_inc = momentum * rbm_vb_inc + (learning_rate / batchsize) * grad_vb
@@ -42,10 +48,7 @@ update_w = rbm_w + update_w_inc
 update_vb = rbm_vb + update_vb_inc
 update_hb = rbm_hb + update_hb_inc
 
-h_sample = sample_prob(tf.nn.sigmoid(tf.matmul(X, rbm_w) + rbm_hb))
-v_sample = sample_prob(tf.nn.sigmoid(tf.matmul(h_sample, tf.transpose(rbm_w)) + rbm_vb))
-
-err = X - v_sample
+err = X - v1_a
 err_sum = tf.reduce_mean(err * err)
 
 sess = tf.Session()

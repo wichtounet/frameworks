@@ -4,3 +4,6 @@
 [submodule "make-utils"]
 	path = make-utils
 	url = https://github.com/wichtounet/make-utils
+[submodule "torch/rbm_toolbox_lua"]
+	path = torch/rbm_toolbox_lua
+	url = https://github.com/skaae/rbm_toolbox_lua.git

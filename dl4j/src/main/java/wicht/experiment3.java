@@ -52,21 +52,21 @@ public class experiment3 {
         model.init();
         model.setListeners(new ScoreIterationListener(600));
 
-        //{
-            //while(mnistTrain.hasNext()){
-                //DataSet next = mnistTrain.next();
-                //INDArray in = next.getFeatureMatrix();
-                //INDArray out = model.reconstruct(in, 1);
+        {
+            while(mnistTrain.hasNext()){
+                DataSet next = mnistTrain.next();
+                INDArray in = next.getFeatureMatrix();
+                INDArray out = model.reconstruct(in, 1);
 
-                //log.info("    distance(1):" + in.distance1(out));
-                //log.info("    distance(2):" + in.distance2(out));
-                //log.info("square distance:" + in.squaredDistance(out));
+                log.info("    distance(1):" + in.distance1(out));
+                log.info("    distance(2):" + in.distance2(out));
+                log.info("square distance:" + in.squaredDistance(out));
 
-                //break;
-            //}
+                break;
+            }
 
-            //mnistTrain.reset();
-        //}
+            mnistTrain.reset();
+        }
 
         for(int i = 0; i < 50; i++) {
             model.fit(mnistTrain);

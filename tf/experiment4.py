@@ -6,7 +6,7 @@ def sample_prob(probs):
     return tf.floor(probs + tf.random_uniform(tf.shape(probs), 0, 1))
     # return tf.select((tf.random_uniform(tf.shape(probs), 0, 1) - probs) > 0.5, tf.ones(tf.shape(probs)), tf.zeros(tf.shape(probs)))
 
-learning_rate = 0.01
+learning_rate = 0.001
 momentum = 0.9
 batchsize = 100
 

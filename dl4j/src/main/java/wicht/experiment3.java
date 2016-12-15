@@ -1,5 +1,6 @@
 package wicht;
 
+import org.deeplearning4j.berkeley.Pair;
 import org.nd4j.linalg.factory.Nd4j;
 import org.deeplearning4j.datasets.fetchers.MnistDataFetcher;
 import org.deeplearning4j.nn.conf.layers.RBM;
@@ -40,48 +41,78 @@ public class experiment3 {
                     .nIn(784).nOut(500)
                     .weightInit(WeightInit.XAVIER)
                     .lossFunction(LossFunctions.LossFunction.RECONSTRUCTION_CROSSENTROPY)
-                    .updater(Updater.NESTEROVS)
-                    .learningRate(0.1)
-                    .momentum(0.9)
+                    .updater(Updater.SGD)
+                    .learningRate(0.01)
+                    //.momentum(0.9)
                     .k(1)
                     .build())
-            .pretrain(true).backprop(false)
+            //.pretrain(true)
+            .backprop(false)
             .build();
 
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
         model.init();
         model.setListeners(new ScoreIterationListener(600));
 
+        org.deeplearning4j.nn.layers.feedforward.rbm.RBM rbm = (org.deeplearning4j.nn.layers.feedforward.rbm.RBM) model.getLayer(0);
+
         {
+            double d1 = 0;
+
             while(mnistTrain.hasNext()){
                 DataSet next = mnistTrain.next();
-                INDArray in = next.getFeatureMatrix();
-                INDArray out = model.reconstruct(in, 1);
 
-                log.info("    distance(1):" + in.distance1(out));
-                log.info("    distance(2):" + in.distance2(out));
-                log.info("square distance:" + in.squaredDistance(out));
+                INDArray v0 = next.getFeatureMatrix();
+                Pair<INDArray, INDArray> h0 = rbm.sampleHiddenGivenVisible(v0);
+                Pair<INDArray, INDArray> v1 = rbm.sampleVisibleGivenHidden(h0.getFirst());
 
-                break;
+                v0.subi(v1.getFirst());
+                INDArray error = v0.mul(v0);
+
+                d1 += (Double) error.meanNumber();
             }
+
+            d1 /= 600.0;
+
+            log.info("Rec. Error: " + d1);
 
             mnistTrain.reset();
         }
 
         for(int i = 0; i < 50; i++) {
-            model.fit(mnistTrain);
+            while(mnistTrain.hasNext()){
+                DataSet next = mnistTrain.next();
+                INDArray v0 = next.getFeatureMatrix();
 
-            //while(mnistTrain.hasNext()){
-                //DataSet next = mnistTrain.next();
-                //INDArray in = next.getFeatureMatrix();
-                //INDArray out = model.reconstruct(in, 1);
+                rbm.fit(v0);
+            }
 
-                //log.info("    distance(1):" + in.distance1(out));
-                //log.info("    distance(2):" + in.distance2(out));
-                //log.info("square distance:" + in.squaredDistance(out));
-            //}
+            mnistTrain.reset();
 
-            //mnistTrain.reset();
+            //model.fit(mnistTrain);
+
+            {
+                double d1 = 0;
+
+                while(mnistTrain.hasNext()){
+                    DataSet next = mnistTrain.next();
+
+                    INDArray v0 = next.getFeatureMatrix();
+                    Pair<INDArray, INDArray> h0 = rbm.sampleHiddenGivenVisible(v0);
+                    Pair<INDArray, INDArray> v1 = rbm.sampleVisibleGivenHidden(h0.getFirst());
+
+                    v0.subi(v1.getFirst());
+                    INDArray error = v0.mul(v0);
+
+                    d1 += (Double) error.meanNumber();
+                }
+
+                d1 /= 600.0;
+
+                log.info("Rec. Error: " + d1);
+
+                mnistTrain.reset();
+            }
         }
     }
 }

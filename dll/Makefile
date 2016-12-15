@@ -78,9 +78,11 @@ $(eval $(call auto_folder_compile,src))
 $(eval $(call add_executable,experiment1,src/experiment1.cpp))
 $(eval $(call add_executable,experiment2,src/experiment2.cpp))
 $(eval $(call add_executable,experiment3,src/experiment3.cpp))
+$(eval $(call add_executable,experiment4,src/experiment4.cpp))
 $(eval $(call add_executable_set,experiment1,experiment1))
 $(eval $(call add_executable_set,experiment2,experiment2))
 $(eval $(call add_executable_set,experiment3,experiment3))
+$(eval $(call add_executable_set,experiment4,experiment4))
 
 release: release_experiment1
 release_debug: release_debug_experiment1

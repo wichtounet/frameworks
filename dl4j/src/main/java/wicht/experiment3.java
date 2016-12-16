@@ -32,29 +32,38 @@ public class experiment3 {
         DataSetIterator mnistTrain = new MnistDataSetIterator(100, 60000, true);
 
         log.info("Build model....");
-        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+        NeuralNetConfiguration conf = new NeuralNetConfiguration.Builder()
+            .miniBatch(true)
             .regularization(false)
             .iterations(1)
             .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-            .list()
-            .layer(0, new RBM.Builder()
+            .updater(Updater.NESTEROVS)
+            .learningRate(0.1)
+            .momentum(0.9)
+            //.list()
+            .layer(new RBM.Builder()
                     .nIn(784).nOut(500)
+                    .activation("sigmoid")
                     .weightInit(WeightInit.XAVIER)
                     .lossFunction(LossFunctions.LossFunction.RECONSTRUCTION_CROSSENTROPY)
-                    .updater(Updater.SGD)
-                    .learningRate(0.01)
-                    //.momentum(0.9)
+                    .updater(Updater.NESTEROVS)
+                    .learningRate(0.1)
+                    .momentum(0.9)
                     .k(1)
                     .build())
-            //.pretrain(true)
-            .backprop(false)
+            //.backprop(false)
             .build();
 
-        MultiLayerNetwork model = new MultiLayerNetwork(conf);
-        model.init();
-        model.setListeners(new ScoreIterationListener(600));
+        int numParams = conf.getLayer().initializer().numParams(conf, true);
+        INDArray params = Nd4j.create(1, numParams);
+        Layer layer = conf.getLayer().instantiate(conf, null, 0, params, true);
 
-        org.deeplearning4j.nn.layers.feedforward.rbm.RBM rbm = (org.deeplearning4j.nn.layers.feedforward.rbm.RBM) model.getLayer(0);
+        //MultiLayerNetwork model = new MultiLayerNetwork(conf);
+        //model.init();
+        //model.setListeners(new ScoreIterationListener(600));
+
+        //org.deeplearning4j.nn.layers.feedforward.rbm.RBM rbm = (org.deeplearning4j.nn.layers.feedforward.rbm.RBM) model.getLayer(0);
+        org.deeplearning4j.nn.layers.feedforward.rbm.RBM rbm = (org.deeplearning4j.nn.layers.feedforward.rbm.RBM) layer;
 
         {
             double d1 = 0;

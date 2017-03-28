@@ -56,7 +56,7 @@ mkdir -p results/$exp/$mode/tf
 
 cd tf
 
-source ~/.virtualenvs/tf/bin/activate
+source ~/.virtualenvs/tf2/bin/activate
 
 before=`date "+%s"`
 CUDA_VISIBLE_DEVICES=0 python experiment3.py | tee ../results/$exp/$mode/tf/raw_results

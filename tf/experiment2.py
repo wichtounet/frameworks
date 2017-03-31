@@ -172,7 +172,7 @@ def main(_):
 
   # Training computation: logits + cross-entropy loss.
   logits = model(train_data_node, True)
-  loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, train_labels_node))
+  loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits = logits, labels = train_labels_node))
 
   # Use simple momentum for the optimization.
   optimizer = tf.train.MomentumOptimizer(learning_rate=0.1, momentum=0.9).minimize(loss)
@@ -208,7 +208,7 @@ def main(_):
   # Create a local session to run the training.
   with tf.Session() as sess:
     # Run all the initializers to prepare the trainable parameters.
-    tf.global_variables_initializer().run()
+    tf.global_variables_initializer().run(session = sess)
     print('Initialized!')
     # Loop through training steps.
     for step in xrange(int(num_epochs * train_size) // BATCH_SIZE):

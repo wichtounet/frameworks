@@ -34,18 +34,16 @@ def multilayer_perceptron(_X, _weights, _biases):
 
 pred = multilayer_perceptron(x, weights, biases)
 
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = pred, labels = y))
 optm = tf.train.MomentumOptimizer(learning_rate=0.1, momentum=0.9).minimize(cost)
 corr = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
 accr = tf.reduce_mean(tf.cast(corr, "float"))
-
-init = tf.initialize_all_variables()
 
 training_epochs = 50
 batch_size      = 100
 
 sess = tf.Session()
-sess.run(init)
+tf.global_variables_initializer().run(session = sess)
 
 for epoch in range(training_epochs):
     avg_cost = 0.

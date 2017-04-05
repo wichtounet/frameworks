@@ -55,6 +55,6 @@ x_test /= 255
 print('Not using data augmentation.')
 model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, validation_data=(x_train, y_train), shuffle=False)
 
-score = model.evaluate(X_test, Y_test, verbose=0)
+score = model.evaluate(x_test, y_test, verbose=0)
 print('Test score:', score[0])
 print('Test accuracy:', score[1])

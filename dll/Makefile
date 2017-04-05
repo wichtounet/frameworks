@@ -9,7 +9,7 @@ CXX_FLAGS += -pedantic -Werror -ftemplate-backtrace-limit=0
 
 RELEASE_FLAGS += -fno-rtti
 
-CXX_FLAGS += -Idll/include -Idll/etl/lib/include -Idll/etl/include/ -Idll/mnist/include/
+CXX_FLAGS += -Idll/include -Idll/etl/lib/include -Idll/etl/include/ -Idll/mnist/include/ -Idll/cifar-10/include/
 LD_FLAGS += -lpthread
 
 CXX_FLAGS += -DETL_PARALLEL -DETL_VECTORIZE_FULL
@@ -79,10 +79,12 @@ $(eval $(call add_executable,experiment1,src/experiment1.cpp))
 $(eval $(call add_executable,experiment2,src/experiment2.cpp))
 $(eval $(call add_executable,experiment3,src/experiment3.cpp))
 $(eval $(call add_executable,experiment4,src/experiment4.cpp))
+$(eval $(call add_executable,experiment5,src/experiment5.cpp))
 $(eval $(call add_executable_set,experiment1,experiment1))
 $(eval $(call add_executable_set,experiment2,experiment2))
 $(eval $(call add_executable_set,experiment3,experiment3))
 $(eval $(call add_executable_set,experiment4,experiment4))
+$(eval $(call add_executable_set,experiment5,experiment5))
 
 release: release_experiment1
 release_debug: release_debug_experiment1

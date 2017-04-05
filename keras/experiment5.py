@@ -45,7 +45,8 @@ model.add(Activation('relu'))
 model.add(Dense(num_classes))
 model.add(Activation('softmax'))
 
-model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
+sgd = SGD(lr=0.001, momentum=0.9)
+model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')

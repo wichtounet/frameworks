@@ -25,7 +25,7 @@ int main(int /*argc*/, char* /*argv*/ []) {
             dll::mp_layer_3d_desc<12, 28, 28, 1, 2, 2>::layer_t,
             dll::conv_desc<12, 14, 14, 24, 3, 3, dll::activation<dll::function::RELU>>::layer_t,
             dll::mp_layer_3d_desc<24, 12, 12, 1, 2, 2>::layer_t,
-            dll::dense_desc<24 * 6 * 6, 64>::layer_t,
+            dll::dense_desc<24 * 6 * 6, 64, dll::activation<dll::function::RELU>>::layer_t,
             dll::dense_desc<64, 10, dll::activation<dll::function::SOFTMAX>>::layer_t>,
         dll::momentum, dll::batch_size<100>, dll::trainer<dll::sgd_trainer>>::dbn_t;
 

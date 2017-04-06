@@ -13,6 +13,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Convolution2D, MaxPooling2D
+from keras.optimizers import SGD
 
 batch_size = 100
 num_classes = 10
@@ -53,7 +54,6 @@ x_test = x_test.astype('float32')
 x_train /= 255
 x_test /= 255
 
-print('Not using data augmentation.')
 model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, validation_data=(x_train, y_train), shuffle=False)
 
 score = model.evaluate(x_test, y_test, verbose=0)

@@ -26,7 +26,7 @@ mkdir -p results/$exp/$mode/dll
 cd dll/
 
 # Set variables for performance
-export DLL_BLAS_PKG=mkl-threads
+export DLL_BLAS_PKG=mkl
 export ETL_MKL=true
 make clean > /dev/null
 make release/bin/experiment2 > /dev/null

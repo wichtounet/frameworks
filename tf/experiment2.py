@@ -36,21 +36,16 @@ from six.moves import urllib
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 
-SOURCE_URL = 'http://yann.lecun.com/exdb/mnist/'
 WORK_DIRECTORY = '../dll/mnist/'
 IMAGE_SIZE = 28
-NUM_CHANNELS = 1
 PIXEL_DEPTH = 255
 NUM_LABELS = 10
 SEED = None  # Set to None for random seed.
 BATCH_SIZE = 100
-NUM_EPOCHS = 50
 EVAL_BATCH_SIZE = 100
 EVAL_FREQUENCY = 600  # Number of steps between evaluations.
 
-
 FLAGS = None
-
 
 def data_type():
     return tf.float32
@@ -62,10 +57,10 @@ def maybe_download(filename):
 def extract_data(filename, num_images):
   with gzip.open(filename) as bytestream:
     bytestream.read(16)
-    buf = bytestream.read(IMAGE_SIZE * IMAGE_SIZE * num_images * NUM_CHANNELS)
+    buf = bytestream.read(IMAGE_SIZE * IMAGE_SIZE * num_images * 1)
     data = numpy.frombuffer(buf, dtype=numpy.uint8).astype(numpy.float32)
     data = (data - (PIXEL_DEPTH / 2.0)) / PIXEL_DEPTH
-    data = data.reshape(num_images, IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS)
+    data = data.reshape(num_images, IMAGE_SIZE, IMAGE_SIZE, 1)
     return data
 
 def extract_labels(filename, num_images):
@@ -95,79 +90,35 @@ def main(_):
   test_data = extract_data(test_data_filename, 10000)
   test_labels = extract_labels(test_labels_filename, 10000)
 
-  num_epochs = NUM_EPOCHS
+  num_epochs = 50
 
   train_size = train_labels.shape[0]
 
-  # This is where training samples and labels are fed to the graph.
-  # These placeholder nodes will be fed a batch of training data at each
-  # training step using the {feed_dict} argument to the Run() call below.
-  train_data_node = tf.placeholder(data_type(), shape=(BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS))
+  train_data_node = tf.placeholder(data_type(), shape=(BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, 1))
   train_labels_node = tf.placeholder(tf.int64, shape=(BATCH_SIZE,))
-  eval_data = tf.placeholder(data_type(), shape=(EVAL_BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS))
+  eval_data = tf.placeholder(data_type(), shape=(EVAL_BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, 1))
 
-  # The variables below hold all the trainable weights. They are passed an
-  # initial value which will be assigned when we call:
-  # {tf.global_variables_initializer().run()}
-  conv1_weights = tf.Variable(
-      tf.truncated_normal([5, 5, NUM_CHANNELS, 8],  # 5x5 filter, depth 32.
-                          stddev=0.1,
-                          seed=SEED, dtype=data_type()))
+  conv1_weights = tf.Variable( tf.truncated_normal([5, 5, 1, 8], stddev=0.1,dtype=data_type()))
   conv1_biases = tf.Variable(tf.zeros([8], dtype=data_type()))
-  conv2_weights = tf.Variable(tf.truncated_normal(
-      [5, 5, 8, 8], stddev=0.1,
-      seed=SEED, dtype=data_type()))
+  conv2_weights = tf.Variable(tf.truncated_normal([5, 5, 8, 8], stddev=0.1, dtype=data_type()))
   conv2_biases = tf.Variable(tf.constant(0.1, shape=[8], dtype=data_type()))
-  fc1_weights = tf.Variable(  # fully connected, depth 512.
-      tf.truncated_normal([IMAGE_SIZE // 4 * IMAGE_SIZE // 4 * 8, 150],
-                          stddev=0.1,
-                          seed=SEED,
-                          dtype=data_type()))
-  fc1_biases = tf.Variable(tf.constant(0.1, shape=[150], dtype=data_type()))
-  fc2_weights = tf.Variable(tf.truncated_normal([150, NUM_LABELS],
-                                                stddev=0.1,
-                                                seed=SEED,
-                                                dtype=data_type()))
-  fc2_biases = tf.Variable(tf.constant(
-      0.1, shape=[NUM_LABELS], dtype=data_type()))
 
-  # We will replicate the model structure for the training subgraph, as well
-  # as the evaluation subgraphs, while sharing the trainable parameters.
+  fc1_weights = tf.Variable(tf.truncated_normal([8 * 4 * 4, 150], stddev=0.1, dtype=data_type()))
+  fc1_biases = tf.Variable(tf.constant(0.1, shape=[150], dtype=data_type()))
+  fc2_weights = tf.Variable(tf.truncated_normal([150, 10], stddev=0.1, dtype=data_type()))
+  fc2_biases = tf.Variable(tf.constant(0.1, shape=[10], dtype=data_type()))
+
   def model(data, train=False):
-    """The Model definition."""
-    # 2D convolution, with 'SAME' padding (i.e. the output feature map has
-    # the same size as the input). Note that {strides} is a 4D array whose
-    # shape matches the data layout: [image index, y, x, depth].
-    conv = tf.nn.conv2d(data,
-                        conv1_weights,
-                        strides=[1, 1, 1, 1],
-                        padding='SAME')
-    # Bias and rectified linear non-linearity.
-    relu = tf.nn.sigmoid(tf.nn.bias_add(conv, conv1_biases))
-    # Max pooling. The kernel size spec {ksize} also follows the layout of
-    # the data. Here we have a pooling window of 2, and a stride of 2.
-    pool = tf.nn.max_pool(relu,
-                          ksize=[1, 2, 2, 1],
-                          strides=[1, 2, 2, 1],
-                          padding='SAME')
-    conv = tf.nn.conv2d(pool,
-                        conv2_weights,
-                        strides=[1, 1, 1, 1],
-                        padding='SAME')
-    relu = tf.nn.sigmoid(tf.nn.bias_add(conv, conv2_biases))
-    pool = tf.nn.max_pool(relu,
-                          ksize=[1, 2, 2, 1],
-                          strides=[1, 2, 2, 1],
-                          padding='SAME')
-    # Reshape the feature map cuboid into a 2D matrix to feed it to the
-    # fully connected layers.
-    pool_shape = pool.get_shape().as_list()
-    reshape = tf.reshape(
-        pool,
-        [pool_shape[0], pool_shape[1] * pool_shape[2] * pool_shape[3]])
-    # Fully connected layer. Note that the '+' operation automatically
-    # broadcasts the biases.
-    hidden = tf.nn.relu(tf.matmul(reshape, fc1_weights) + fc1_biases)
+    conv = tf.nn.conv2d(data, conv1_weights, strides=[1, 1, 1, 1], padding='VALID')
+    sig = tf.nn.sigmoid(tf.nn.bias_add(conv, conv1_biases))
+    pool = tf.nn.max_pool(sig, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+
+    conv = tf.nn.conv2d(pool, conv2_weights, strides=[1, 1, 1, 1], padding='VALID')
+    sig = tf.nn.sigmoid(tf.nn.bias_add(conv, conv2_biases))
+    pool = tf.nn.max_pool(sig, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+
+    flat = tf.reshape(pool, [BATCH_SIZE, 8 * 4 * 4])
+    hidden = tf.nn.sigmoid(tf.matmul(flat, fc1_weights) + fc1_biases)
     return tf.matmul(hidden, fc2_weights) + fc2_biases
 
   # Training computation: logits + cross-entropy loss.

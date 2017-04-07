@@ -1,0 +1,18 @@
+net: "experiment5.prototxt"
+
+test_state: { stage: 'test-on-train' }
+test_iter: 500
+test_state: { stage: 'test-on-test' }
+test_iter: 100
+
+test_interval: 500
+
+base_lr: 0.001
+momentum: 0.9
+
+lr_policy: "fixed"
+
+display: 500
+max_iter: 25000
+
+solver_mode: CPU

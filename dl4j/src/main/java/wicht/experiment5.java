@@ -84,18 +84,18 @@ public class experiment5 {
 
             // We need the train error after each epoch
 
-            //trainIt.reset();
+            trainIt.reset();
 
-            //Evaluation eval = new Evaluation(10);
-            //while(trainIt.hasNext()){
-                //DataSet next = trainIt.next();
-                //INDArray output = model.output(next.getFeatureMatrix());
-                //eval.eval(next.getLabels(), output);
-            //}
+            Evaluation eval = new Evaluation(10);
+            while(trainIt.hasNext()){
+                DataSet next = trainIt.next();
+                INDArray output = model.output(next.getFeatureMatrix());
+                eval.eval(next.getLabels(), output);
+            }
 
-            //log.info("Train accuracy:" + eval.accuracy());
+            log.info("Train accuracy:" + eval.accuracy());
 
-            //trainIt.reset();
+            trainIt.reset();
         }
 
         // After training, we need the test error

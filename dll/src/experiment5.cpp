@@ -20,17 +20,17 @@
 int main(int /*argc*/, char* /*argv*/ []) {
     auto dataset = cifar::read_dataset_direct<std::vector, etl::fast_dyn_matrix<float, 3, 32, 32>>();
 
-    //for (auto& image : dataset.training_images) {
-        //for (auto& pixel : image) {
-            //pixel *= (1.0 / 256.0);
-        //}
-    //}
+    for (auto& image : dataset.training_images) {
+        for (auto& pixel : image) {
+            pixel *= (1.0 / 256.0);
+        }
+    }
 
-    //for (auto& image : dataset.test_images) {
-        //for (auto& pixel : image) {
-            //pixel *= (1.0 / 256.0);
-        //}
-    //}
+    for (auto& image : dataset.test_images) {
+        for (auto& pixel : image) {
+            pixel *= (1.0 / 256.0);
+        }
+    }
 
     using dbn_t = dll::dbn_desc<
         dll::dbn_layers<

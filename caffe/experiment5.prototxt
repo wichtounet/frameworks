@@ -1,4 +1,4 @@
-name: "Experiment 5"
+name: "CIFAR10_full"
 layer {
   name: "cifar"
   type: "Data"
@@ -7,9 +7,9 @@ layer {
   include {
     phase: TRAIN
   }
-#  transform_param {
-#    scale: 0.00390625
-#  }
+  transform_param {
+    scale: 0.00390625
+  }
   data_param {
     source: "/home/wichtounet/dev/caffe-cpu/examples/cifar10/cifar10_train_lmdb"
     batch_size: 100
@@ -25,9 +25,9 @@ layer {
     phase: TEST
     stage: "test-on-train"
   }
-#  transform_param {
-#    scale: 0.00390625
-#  }
+  transform_param {
+    scale: 0.00390625
+  }
   data_param {
     source: "/home/wichtounet/dev/caffe-cpu/examples/cifar10/cifar10_train_lmdb"
     batch_size: 100
@@ -43,9 +43,9 @@ layer {
     phase: TEST
     stage: "test-on-test"
   }
-#  transform_param {
-#    scale: 0.00390625
-#  }
+  transform_param {
+    scale: 0.00390625
+  }
   data_param {
     source: "/home/wichtounet/dev/caffe-cpu/examples/cifar10/cifar10_test_lmdb"
     batch_size: 100

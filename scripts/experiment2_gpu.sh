@@ -121,7 +121,6 @@ cd caffe
 
 export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
 
-$CAFFE_ROOT/build/tools/caffe train --solver=experiment2_solver_gpu.prototxt
 before=`date "+%s"`
 $CAFFE_ROOT/build/tools/caffe train --solver=experiment2_solver_gpu.prototxt | tee ../results/$exp/$mode/caffe/raw_results
 after=`date "+%s"`

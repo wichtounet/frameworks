@@ -22,13 +22,13 @@ int main(int /*argc*/, char* /*argv*/ []) {
 
     for (auto& image : dataset.training_images) {
         for (auto& pixel : image) {
-            pixel *= (1.0 / 256.0);
+            pixel *= (1.0 / 255.0);
         }
     }
 
     for (auto& image : dataset.test_images) {
         for (auto& pixel : image) {
-            pixel *= (1.0 / 256.0);
+            pixel *= (1.0 / 255.0);
         }
     }
 

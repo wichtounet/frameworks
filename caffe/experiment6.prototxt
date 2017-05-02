@@ -8,19 +8,8 @@ layer {
     phase: TRAIN
   }
   transform_param {
-    #mirror: true
-    #crop_size: 227
-    #mean_file: "/home/wichtounet/dev/caffe-cpu/data/ilsvrc12/imagenet_mean.binaryproto"
     scale: 0.00390625
   }
-# mean pixel / channel-wise mean instead of mean image
-#  transform_param {
-#    crop_size: 227
-#    mean_value: 104
-#    mean_value: 117
-#    mean_value: 123
-#    mirror: true
-#  }
   data_param {
     source: "/home/wichtounet/dev/caffe-cpu/examples/imagenet/ilsvrc12_train_lmdb"
     batch_size: 128
@@ -36,18 +25,8 @@ layer {
     phase: TEST
   }
   transform_param {
-    mirror: false
-    crop_size: 227
-    mean_file: "/home/wichtounet/dev/caffe-cpu/data/ilsvrc12/imagenet_mean.binaryproto"
+    scale: 0.00390625
   }
-# mean pixel / channel-wise mean instead of mean image
-#  transform_param {
-#    crop_size: 227
-#    mean_value: 104
-#    mean_value: 117
-#    mean_value: 123
-#    mirror: false
-#  }
   data_param {
     source: "/home/wichtounet/dev/caffe-cpu/examples/imagenet/ilsvrc12_val_lmdb"
     batch_size: 50
@@ -60,7 +39,7 @@ layer {
   bottom: "data"
   top: "conv1"
   convolution_param {
-    num_output: 10
+    num_output: 16
     pad: 1
     kernel_size: 3
     weight_filler {
@@ -94,7 +73,7 @@ layer {
   bottom: "pool1"
   top: "conv2"
   convolution_param {
-    num_output: 10
+    num_output: 16
     pad: 1
     kernel_size: 3
     weight_filler {
@@ -128,7 +107,7 @@ layer {
   bottom: "pool2"
   top: "conv3"
   convolution_param {
-    num_output: 10
+    num_output: 32
     pad: 1
     kernel_size: 3
     weight_filler {
@@ -162,7 +141,7 @@ layer {
   bottom: "pool3"
   top: "conv4"
   convolution_param {
-    num_output: 10
+    num_output: 32
     pad: 1
     kernel_size: 3
     weight_filler {
@@ -196,7 +175,7 @@ layer {
   bottom: "pool4"
   top: "conv5"
   convolution_param {
-    num_output: 10
+    num_output: 32
     pad: 1
     kernel_size: 3
     weight_filler {
@@ -231,7 +210,7 @@ layer {
   bottom: "pool5"
   top: "fc6"
   inner_product_param {
-    num_output: 640
+    num_output: 2048
     weight_filler {
       type: "xavier"
     }

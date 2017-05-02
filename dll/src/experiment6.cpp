@@ -27,9 +27,9 @@
 //static constexpr const char* imagenet_path = "/data_ext/imagenet/resized/";
 static constexpr const char* imagenet_path = "/home/wichtounet/datasets/imagenet_resized/";
 
-static constexpr size_t batches_cache = 4;
+static constexpr size_t batches_cache = 5;
 static constexpr size_t batches_net = 4;
-static constexpr size_t batch_size = 64;
+static constexpr size_t batch_size = 128;
 
 static constexpr bool verbose = false;
 

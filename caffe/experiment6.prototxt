@@ -247,10 +247,10 @@ layer {
   top: "fc6"
 }
 layer {
-  name: "fc8"
+  name: "fc7"
   type: "InnerProduct"
-  bottom: "fc7"
-  top: "fc8"
+  bottom: "fc6"
+  top: "fc7"
   inner_product_param {
     num_output: 1000
     weight_filler {
@@ -264,7 +264,7 @@ layer {
 layer {
   name: "accuracy"
   type: "Accuracy"
-  bottom: "fc8"
+  bottom: "fc7"
   bottom: "label"
   top: "accuracy"
   include {
@@ -274,7 +274,7 @@ layer {
 layer {
   name: "loss"
   type: "SoftmaxWithLoss"
-  bottom: "fc8"
+  bottom: "fc7"
   bottom: "label"
   top: "loss"
 }

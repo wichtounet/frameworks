@@ -107,9 +107,9 @@ struct imagenet_image_iterator : std::iterator<
 
                             auto pixel = mat.at<cv::Vec3b>(y, x);
 
-                            image(0, x, y) = pixel.val[0];
-                            image(1, x, y) = pixel.val[1];
-                            image(2, x, y) = pixel.val[2];
+                            image(0, x, y) = pixel.val[0] / 255;
+                            image(1, x, y) = pixel.val[1] / 255;
+                            image(2, x, y) = pixel.val[2] / 255;
                         }
                     }
 

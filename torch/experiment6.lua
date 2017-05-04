@@ -6,7 +6,7 @@ require 'image'
 training_images = {}
 training_labels = {}
 
-batch_size = 16
+batch_size = 16 --- Unfortunately Torch takes an immense amount of CPU memory...
 files = 0
 label_counter = 0
 

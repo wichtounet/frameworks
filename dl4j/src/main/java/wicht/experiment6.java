@@ -13,7 +13,7 @@ import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.optimize.listeners.*;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
@@ -85,8 +85,7 @@ public class experiment6 {
 
         MultiLayerConfiguration conf = builder.build();
         MultiLayerNetwork model = new MultiLayerNetwork(conf);
-        model.setListeners(new ScoreIterationListener(1));  //print the score with every iteration
-        model.setListeners(new PerformanceListener(1));  //print the score with every iteration
+        model.setListeners(new ScoreIterationListener(1), new PerformanceListener(1));
         model.init();
 
         log.info("Train model....");

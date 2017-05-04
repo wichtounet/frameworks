@@ -12,34 +12,9 @@
 ######################
 
 exp=6
-mode=cpu
+mode=gpu
 
 echo "Starting experiment $exp ($mode)"
-
-#  DLL  #
-#########
-
-echo "Starting DLL"
-
-mkdir -p results/$exp/$mode/dll
-
-cd dll/
-
-# Set variables for performance
-export DLL_BLAS_PKG=mkl
-export ETL_MKL=true
-make clean > /dev/null
-make release/bin/experiment6 > /dev/null
-before=`date "+%s"`
-./release/bin/experiment6 | tee ../results/$exp/$mode/dll/raw_results
-after=`date "+%s"`
-echo "Time: $((after - before))"
-
-# Cleanup variables
-unset DLL_BLAS_PKG
-unset ETL_MKL
-
-cd ..
 
 #  Caffe  #
 ###########
@@ -53,7 +28,7 @@ cd caffe
 export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
 
 before=`date "+%s"`
-$CAFFE_ROOT/build/tools/caffe train --solver=experiment6_solver.prototxt | tee ../results/$exp/$mode/caffe/raw_results
+$CAFFE_ROOT/build/tools/caffe train --solver=experiment6_solver_gpu.prototxt | tee ../results/$exp/$mode/caffe/raw_results
 after=`date "+%s"`
 echo "Time: $((after - before))"
 
@@ -71,7 +46,7 @@ cd tf
 source ~/.virtualenvs/tf2/bin/activate
 
 before=`date "+%s"`
-CUDA_VISIBLE_DEVICES=-1 python experiment6.py | tee ../results/$exp/$mode/tf/raw_results
+CUDA_VISIBLE_DEVICES=0 python experiment6.py | tee ../results/$exp/$mode/tf/raw_results
 after=`date "+%s"`
 echo "Time: $((after - before))"
 
@@ -91,7 +66,7 @@ cd keras
 source ~/.virtualenvs/tf2/bin/activate
 
 before=`date "+%s"`
-CUDA_VISIBLE_DEVICES=-1 python experiment6.py | tee ../results/$exp/$mode/keras/raw_results
+CUDA_VISIBLE_DEVICES=0 python experiment6.py | tee ../results/$exp/$mode/keras/raw_results
 after=`date "+%s"`
 echo "Time: $((after - before))"
 
@@ -108,7 +83,7 @@ mkdir -p results/$exp/$mode/dl4j
 
 cd dl4j
 
-export DL4J_MODE=native
+export DL4J_MODE=cuda-8.0
 mvn clean install > /dev/null
 
 cd target/classes
@@ -134,7 +109,7 @@ cd torch
 source ~/torch/install/bin/torch-activate
 
 before=`date "+%s"`
-th experiment6.lua | tee ../results/$exp/$mode/torch/raw_results
+th experiment6_gpu.lua | tee ../results/$exp/$mode/torch/raw_results
 after=`date "+%s"`
 echo "Time: $((after - before))"
 

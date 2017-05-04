@@ -1,14 +1,7 @@
-'''Train a simple deep CNN on the CIFAR10 small images dataset.
-GPU run command with Theano backend (with TensorFlow, the GPU is automatically used):
-    THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatx=float32 python cifar10_cnn.py
-It gets down to 0.65 test logloss in 25 epochs, and down to 0.55 after 50 epochs.
-(it's still underfitting at that point, though).
-'''
-
 from __future__ import print_function
 import keras
 from keras.datasets import cifar10
-from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
@@ -18,9 +11,6 @@ import os
 import math
 import numpy
 from PIL import Image
-
-from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
-
 
 batch_size = 128
 num_classes = 1000
@@ -41,7 +31,6 @@ for subdir, dirs, files in os.walk('/data/datasets/imagenet_resized/train/'):
 
         label_counter = label_counter + 1
 
-
 nice_n = math.floor(len(training_images) / batch_size) * batch_size
 
 print(nice_n)
@@ -59,8 +48,6 @@ def get_batch():
     index = 1
 
     global current_index
-    global training_images
-    global training_labels
 
     B = numpy.zeros(shape=(batch_size, 256, 256, 3))
     L = numpy.zeros(shape=(batch_size))
@@ -134,4 +121,3 @@ while current_index + batch_size < len(training_images):
     score = model.evaluate_on_batch(b, l, verbose=0)
     print('Test score:', score[0])
     print('Test accuracy:', score[1])
-

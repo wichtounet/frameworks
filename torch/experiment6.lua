@@ -178,8 +178,7 @@ print("Start training")
 
 do
     for i = 1,max_iters do
-        --local loss = run_epoch()
-        local loss = 0
+        local loss = run_epoch()
         local accuracy = eval()
         print(string.format('Epoch: %d loss: %4f train acc: %5f', i, loss, accuracy))
     end

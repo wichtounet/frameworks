@@ -296,6 +296,8 @@ int main(int /*argc*/, char* /*argv*/ []) {
 
     read_files(train_files, label_map, std::string(imagenet_path) + "train");
 
+    train_files.resize(128 * 10009); // Only keep full batches
+
     std::cout << train_files.size() << " images found" << std::endl;
     std::cout << label_map.size() << " labels found" << std::endl;
 
@@ -331,7 +333,7 @@ int main(int /*argc*/, char* /*argv*/ []) {
         >,
         dll::batch_mode, dll::big_batch_size<batches_net>, dll::batch_size<batch_size>,
         dll::momentum, dll::trainer<dll::sgd_trainer>,
-        dll::verbose>::dbn_t;
+        dll::verbose>::dbn_t; //TODO Disable accuracy test
 
     auto dbn = std::make_unique<dbn_t>();
 
@@ -342,10 +344,10 @@ int main(int /*argc*/, char* /*argv*/ []) {
 
     dbn->display();
 
-    auto ft_error = dbn->fine_tune(iit, iend, lit, lend, 2);
+    auto ft_error = dbn->fine_tune(iit, iend, lit, lend, 5);
     std::cout << "ft_error:" << ft_error << std::endl;
 
-    //TODO
+    //TODO Evaluate at the end
 
     return 0;
 }

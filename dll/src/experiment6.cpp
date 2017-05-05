@@ -24,7 +24,6 @@
 #include "dll/dbn.hpp"
 #include "dll/trainer/stochastic_gradient_descent.hpp"
 
-//static constexpr const char* imagenet_path = "/data_ext/imagenet/resized/";
 static constexpr const char* imagenet_path = "/home/wichtounet/datasets/imagenet_resized/";
 
 static constexpr size_t batches_cache = 5;
@@ -34,11 +33,11 @@ static constexpr size_t batch_size = 128;
 static constexpr bool verbose = false;
 
 struct imagenet_image_iterator : std::iterator<
-                                 std::input_iterator_tag,
-                                 etl::fast_dyn_matrix<float, 3, 256, 256>,
-                                 ptrdiff_t,
-                                 etl::fast_dyn_matrix<float, 3, 256, 256>*,
-                                 etl::fast_dyn_matrix<float, 3, 256, 256>&
+                                     std::input_iterator_tag,
+                                     etl::fast_dyn_matrix<float, 3, 256, 256>,
+                                     ptrdiff_t,
+                                     etl::fast_dyn_matrix<float, 3, 256, 256>*,
+                                     etl::fast_dyn_matrix<float, 3, 256, 256>&
                                  > {
 
     using value_type = etl::fast_dyn_matrix<float, 3, 256, 256>;
@@ -333,11 +332,11 @@ int main(int /*argc*/, char* /*argv*/ []) {
         >,
         dll::batch_mode, dll::big_batch_size<batches_net>, dll::batch_size<batch_size>,
         dll::momentum, dll::trainer<dll::sgd_trainer>,
-        dll::verbose>::dbn_t; //TODO Disable accuracy test
+        dll::verbose, dll::no_epoch_error>::dbn_t;
 
     auto dbn = std::make_unique<dbn_t>();
 
-    dbn->learning_rate = 0.001;
+    dbn->learning_rate = 0.01;
     dbn->initial_momentum = 0.9;
     dbn->momentum = 0.9;
     dbn->goal = -1.0;
@@ -347,7 +346,7 @@ int main(int /*argc*/, char* /*argv*/ []) {
     auto ft_error = dbn->fine_tune(iit, iend, lit, lend, 5);
     std::cout << "ft_error:" << ft_error << std::endl;
 
-    //TODO Evaluate at the end
+    dbn->evaluate(iit, iend, lit, lend);
 
     return 0;
 }

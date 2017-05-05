@@ -33,7 +33,7 @@ public class experiment6 {
     public static void main(String[] args) throws Exception {
         int nChannels = 3; // Number of input channels
         int outputNum = 1000; // The number of possible outcomes
-        int batchSize = 32; // Test batch size
+        int batchSize = 64; // Test batch size
         int numEpochs = 10; // Number of training epochs
         int iterations = 1; // Number of training iterations
 
@@ -53,7 +53,7 @@ public class experiment6 {
         MultiLayerConfiguration.Builder builder = new NeuralNetConfiguration.Builder()
                 .iterations(1)
                 .regularization(false)
-                .learningRate(0.001)
+                .learningRate(0.01)
                 .weightInit(WeightInit.XAVIER)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .updater(Updater.SGD)

@@ -28,7 +28,7 @@ layer {
     scale: 0.00390625
   }
   data_param {
-    source: "/home/wichtounet/dev/caffe-cpu/examples/imagenet/ilsvrc12_val_lmdb"
+    source: "/home/wichtounet/dev/caffe-cpu/examples/imagenet/ilsvrc12_train_lmdb"
     batch_size: 128
     backend: LMDB
   }

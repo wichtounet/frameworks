@@ -1,15 +1,15 @@
 net: "experiment6.prototxt"
 
 test_initialization: false
-test_iter: 1000
-test_interval: 1000
+test_iter: 10009
+test_interval: 10009
 
-base_lr: 0.001
+base_lr: 0.01
 momentum: 0.9
 
 lr_policy: "fixed"
 
 display: 1
-max_iter: 25000
+max_iter: 50045
 
 solver_mode: GPU

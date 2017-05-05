@@ -24,7 +24,7 @@ import tensorflow as tf
 batch_size = 128
 batches = 10009
 EVAL_FREQUENCY = 10009  # Number of steps between evaluations.
-num_epochs = 10
+num_epochs = 5
 num_classes = 1000
 
 FLAGS = None
@@ -158,7 +158,7 @@ def main(_):
     loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = train_labels_node))
 
     # Use simple momentum for the optimization.
-    optimizer = tf.train.MomentumOptimizer(learning_rate=0.001, momentum=0.9).minimize(loss)
+    optimizer = tf.train.MomentumOptimizer(learning_rate=0.01, momentum=0.9).minimize(loss)
 
     acc_pred = tf.equal(tf.argmax(logits,1), tf.argmax(train_labels_node,1))
     accuracy = tf.reduce_mean(tf.cast(acc_pred, tf.float32))
@@ -176,6 +176,8 @@ def main(_):
             current_index = 0
 
             while current_index + batch_size < len(training_images):
+                start_time = time.time()
+
                 b, l = get_batch()
 
                 feed_dict = {train_data_node: b, train_labels_node: l}
@@ -183,7 +185,9 @@ def main(_):
                 # Run the optimizer to update weights.
                 _, batch_loss, batch_accuracy = sess.run([optimizer, loss, accuracy], feed_dict=feed_dict)
 
-                print('batch {}/{} loss: {} accuracy: {}'.format(int(current_index / batch_size), int(nice_n / batch_size), batch_loss, batch_accuracy))
+                end_time = time.time()
+
+                print('batch {}/{} loss: {} accuracy: {} duration: {}ms'.format(int(current_index / batch_size), int(nice_n / batch_size), batch_loss, batch_accuracy, 1000 * (end_time - start_time)))
                 sys.stdout.flush()
 
             print('epoch {}/{}'.format(epoch, num_epoch))

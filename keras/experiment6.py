@@ -10,11 +10,12 @@ from keras.optimizers import SGD
 import os
 import math
 import numpy
+import time
 from PIL import Image
 
 batch_size = 128
 num_classes = 1000
-epochs = 10
+epochs = 5
 data_augmentation = False
 
 label_counter = 0
@@ -43,6 +44,8 @@ perm = list(range(len(training_images)))
 random.shuffle(perm)
 training_images = [training_images[index] for index in perm]
 training_labels = [training_labels[index] for index in perm]
+
+print("Data is ready...")
 
 def get_batch():
     index = 1
@@ -101,17 +104,23 @@ model.add(Activation('relu'))
 model.add(Dense(num_classes))
 model.add(Activation('softmax'))
 
-sgd = SGD(lr=0.001, momentum=0.9)
+sgd = SGD(lr=0.01, momentum=0.9)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+
+model.summary()
 
 for i in range(0, epochs):
     current_index = 0
 
     while current_index + batch_size < len(training_images):
+        start_time = time.time()
+
         b, l = get_batch()
 
         loss, accuracy = model.train_on_batch(b, l)
-        print('batch {}/{} loss: {} accuracy: {}'.format(int(current_index / batch_size), int(nice_n / batch_size), loss, accuracy))
+        end_time = time.time()
+
+        print('batch {}/{} loss: {} accuracy: {} time: {}ms'.format(int(current_index / batch_size), int(nice_n / batch_size), loss, accuracy, 1000 * (end_time - start_time)), flush=True)
 
 current_index = 0
 

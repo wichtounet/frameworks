@@ -2,26 +2,30 @@ require 'torch'
 require 'cunn'
 require 'optim'
 require 'image'
-
--- sadly only way to get wall time more precise than seconds...
---local posix = require 'posix'
+require 'sys'
 
 training_images = {}
 training_labels = {}
 
 batch_size = 64
 files = 0
-label_counter = 0
+label_counter = 1
 
 for folder in paths.files('/data/datasets/imagenet_resized/train/') do
     if #folder > 2 then
-        label_counter = label_counter + 1
+        before = #training_images
 
         for file in paths.files('/data/datasets/imagenet_resized/train/' .. folder) do
             if #file > 2 then
                 table.insert(training_images, '/data/datasets/imagenet_resized/train/' .. folder .. '/'.. file)
                 table.insert(training_labels, label_counter)
             end
+        end
+
+        after = #training_images
+
+        if (after - before) > 0 then
+            label_counter = label_counter + 1
         end
     end
 end
@@ -63,6 +67,8 @@ function get_batch()
         else
             B[index] = imagetensor
         end
+
+        B[index] = B[index] / 255
 
         L[index] = training_labels[current_index]
 
@@ -112,7 +118,7 @@ model:add(nn.ReLU())
 model:add(nn.Linear(2048, 1000))
 
 sgd_params = {
-   learningRate = 0.001,
+   learningRate = 0.01,
    learningRateDecay = 0.0,
    weightDecay = 0.0,
    momentum = 0.9
@@ -136,9 +142,9 @@ run_epoch = function()
     current_index = 1
 
     while current_index + batch_size < #training_images do
-        local inputs, targets = get_batch()
+        sys.tic()
 
-        --local start_time = posix.clock_gettime(0)
+        local inputs, targets = get_batch()
 
         local feval = function(x_new)
             -- reset data
@@ -156,11 +162,9 @@ run_epoch = function()
         count = count + 1
         current_loss = current_loss + fs[1]
 
-        --local end_time = posix.clock_gettime(0)
-        --local elapsed_time = end_time - start_time
+        t = sys.toc()
 
-        --print(elapsed_time)
-        print(string.format("Batches: %d/%d loss: %4f time: ", current_index, #training_images,fs[1]))
+        print(string.format("Batches: %d/%d loss: %4f time: %4fms", current_index, #training_images,fs[1], 1000 * t))
     end
 
     -- normalize loss
@@ -189,14 +193,16 @@ eval = function()
     return count / nice_n
 end
 
-max_iters = 10
+max_iters = 5
 
 print("Start training")
 
 do
     for i = 1,max_iters do
         local loss = run_epoch()
-        local accuracy = eval()
-        print(string.format('Epoch: %d loss: %4f train acc: %5f', i, loss, accuracy))
+        print(string.format('Epoch: %d loss: %4f', i, loss))
     end
 end
+
+local accuracy = eval()
+print(string.format('Final: acc: %5f', accuracy))

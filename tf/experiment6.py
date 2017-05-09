@@ -24,7 +24,7 @@ import tensorflow as tf
 batch_size = 128
 batches = 10009
 EVAL_FREQUENCY = 10009  # Number of steps between evaluations.
-num_epochs = 5
+num_epochs = 0
 num_classes = 1000
 
 FLAGS = None
@@ -36,13 +36,6 @@ import pickle
 
 def data_type():
     return tf.float32
-
-def error_rate(predictions, labels):
-  """Return the error rate based on dense predictions and sparse labels."""
-  return 100.0 - (
-      100.0 *
-      numpy.sum(numpy.argmax(predictions, 1) == labels) /
-      predictions.shape[0])
 
 def get_batch():
     index = 1
@@ -191,8 +184,7 @@ def main(_):
 
                 end_time = time.time()
 
-                print('batch {}/{} loss: {} accuracy: {} duration: {}ms'.format(int(current_index / batch_size), int(nice_n / batch_size), batch_loss, batch_accuracy, 1000 * (end_time - start_time)))
-                sys.stdout.flush()
+                print('batch {}/{} loss: {} accuracy: {} duration: {}ms'.format(int(current_index / batch_size), int(nice_n / batch_size), batch_loss, batch_accuracy, 1000 * (end_time - start_time)), flush = True)
 
             print('epoch {}/{}'.format(epoch, num_epoch))
 
@@ -206,10 +198,11 @@ def main(_):
 
             feed_dict = {train_data_node: b, train_labels_node: l}
             [batch_accuracy] = sess.run([accuracy], feed_dict=feed_dict)
+            print('Test batch accuracy:', batch_accuracy, flush = True)
 
             acc += batch_accuracy
 
-        acc /= 10009
+        acc /= batches
 
         print('Test accuracy: %.1f%%' % acc)
 

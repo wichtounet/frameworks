@@ -13,9 +13,9 @@ import numpy
 import time
 from PIL import Image
 
-batch_size = 64
+batch_size = 128
 num_classes = 1000
-epochs = 0
+epochs = 5
 data_augmentation = False
 
 label_counter = 0

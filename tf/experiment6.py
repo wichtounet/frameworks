@@ -55,14 +55,18 @@ def get_batch():
     L = numpy.zeros(shape=(batch_size))
 
     while index < batch_size:
-        img = load_img(training_images[current_index])
-        B[index] = img_to_array(img)
-        B[index] /= 255
+        try:
+            img = load_img(training_images[current_index])
+            B[index] = img_to_array(img)
+            B[index] /= 255
 
-        L[index] = training_labels[current_index]
+            L[index] = training_labels[current_index]
 
-        index = index + 1
-        current_index = current_index + 1
+            index = index + 1
+            current_index = current_index + 1
+        except:
+            print("Ignore image {}".format(training_images[current_index]))
+            current_index = current_index + 1
 
     return B, keras.utils.to_categorical(L, num_classes)
 

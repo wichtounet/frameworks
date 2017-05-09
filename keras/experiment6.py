@@ -13,9 +13,9 @@ import numpy
 import time
 from PIL import Image
 
-batch_size = 128
+batch_size = 64
 num_classes = 1000
-epochs = 5
+epochs = 0
 data_augmentation = False
 
 label_counter = 0
@@ -56,14 +56,18 @@ def get_batch():
     L = numpy.zeros(shape=(batch_size))
 
     while index < batch_size:
-        img = load_img(training_images[current_index])
-        B[index] = img_to_array(img)
-        B[index] /= 255
+        try:
+            img = load_img(training_images[current_index])
+            B[index] = img_to_array(img)
+            B[index] /= 255
 
-        L[index] = training_labels[current_index]
+            L[index] = training_labels[current_index]
 
-        index = index + 1
-        current_index = current_index + 1
+            index = index + 1
+            current_index = current_index + 1
+        except:
+            print("Ignore image {}".format(training_images[current_index]))
+            current_index = current_index + 1
 
     return B, keras.utils.to_categorical(L, num_classes)
 
@@ -122,11 +126,24 @@ for i in range(0, epochs):
 
         print('batch {}/{} loss: {} accuracy: {} time: {}ms'.format(int(current_index / batch_size), int(nice_n / batch_size), loss, accuracy, 1000 * (end_time - start_time)), flush=True)
 
+    print('epoch {}/{}'.format(i, epochs))
+
 current_index = 0
+loss = 0.0
+acc = 0.0
 
 while current_index + batch_size < len(training_images):
     b, l = get_batch()
 
-    score = model.evaluate_on_batch(b, l, verbose=0)
-    print('Test score:', score[0])
-    print('Test accuracy:', score[1])
+    score = model.test_on_batch(b, l)
+    print('Test batch score:', score[0])
+    print('Test batch accuracy:', score[1], flush = True)
+
+    loss += score[0]
+    acc += score[1]
+
+loss = loss / int(nice_n / batch_size)
+acc = acc / int(nice_n / batch_size)
+
+print('Test score:', loss)
+print('Test accuracy:', acc)

@@ -90,7 +90,7 @@ public class experiment6 {
 
         log.info("Train model....");
         for( int i=0; i<numEpochs; i++ ){
-        	log.info("Epoch " + i);
+            log.info("Epoch " + i);
             model.fit(dataIter);
 
             // We need the train error after each epoch

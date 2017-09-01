@@ -9,23 +9,25 @@
 #include <chrono>
 
 #include "dll/neural/dense_layer.hpp"
-#include "dll/dbn.hpp"
-#include "dll/trainer/stochastic_gradient_descent.hpp"
+#include "dll/test.hpp"
+#include "dll/network.hpp"
+#include "dll/datasets.hpp"
 
 #include "mnist/mnist_reader.hpp"
 #include "mnist/mnist_utils.hpp"
 
 int main(int /*argc*/, char* /*argv*/ []) {
-    auto dataset = mnist::read_dataset_direct<std::vector, etl::dyn_vector<float>>();
-
-    mnist::binarize_dataset(dataset);
+    // Load the dataset
+    auto dataset = dll::make_mnist_dataset(0, dll::batch_size<100>{}, dll::binarize_pre<30>{});
 
     using dbn_t = dll::dbn_desc<
         dll::dbn_layers<
             dll::dense_desc<28 * 28, 500>::layer_t,
             dll::dense_desc<500, 250>::layer_t,
             dll::dense_desc<250, 10, dll::activation<dll::function::SOFTMAX>>::layer_t>,
-        dll::momentum, dll::batch_size<100>, dll::trainer<dll::sgd_trainer>>::dbn_t;
+        dll::batch_size<100>,
+        dll::updater<dll::updater_type::MOMENTUM>
+        >::dbn_t;
 
     auto dbn = std::make_unique<dbn_t>();
 
@@ -36,11 +38,9 @@ int main(int /*argc*/, char* /*argv*/ []) {
 
     dbn->display();
 
-    auto ft_error = dbn->fine_tune(dataset.training_images, dataset.training_labels, 50);
-    std::cout << "ft_error:" << ft_error << std::endl;
+    dbn->fine_tune(dataset.train(), 50);
 
-    auto test_error = dll::test_set(dbn, dataset.test_images, dataset.test_labels, dll::predictor());
-    std::cout << "test_error:" << test_error << std::endl;
+    dbn->evaluate(dataset.test());
 
     return 0;
 }

@@ -14,11 +14,18 @@ OPENCV_LD_FLAGS=-lopencv_core -lopencv_imgproc -lopencv_highgui
 CXX_FLAGS += -Idll/include -Idll/etl/lib/include -Idll/etl/include/ -Idll/mnist/include/ -Idll/cifar-10/include/
 LD_FLAGS += -lpthread $(OPENCV_LD_FLAGS)
 
-CXX_FLAGS += -DETL_PARALLEL -DETL_VECTORIZE_FULL
+CXX_FLAGS += -DETL_PARALLEL -DETL_VECTORIZE_FULL -DETL_GPU_POOL
 
-#CXX_FLAGS += -DETL_CONV4_PREFER_BLAS
+CXX_FLAGS += -Wno-documentation
 
 DLL_BLAS_PKG ?= mkl
+
+# Tune GCC warnings
+ifeq (,$(findstring clang,$(CXX)))
+ifneq (,$(findstring g++,$(CXX)))
+CXX_FLAGS += -Wno-ignored-attributes -Wno-misleading-indentation
+endif
+endif
 
 # Try to detect parallel mkl
 ifneq (,$(findstring threads,$(DLL_BLAS_PKG)))
@@ -52,30 +59,24 @@ endif
 ifneq (,$(ETL_CUBLAS))
 CXX_FLAGS += -DETL_CUBLAS_MODE $(shell pkg-config --cflags cublas)
 LD_FLAGS += $(shell pkg-config --libs cublas)
-
-ifneq (,$(findstring clang,$(CXX)))
-CXX_FLAGS += -Wno-documentation
-endif
 endif
 
 # On demand activation of cufft support
 ifneq (,$(ETL_CUFFT))
 CXX_FLAGS += -DETL_CUFFT_MODE $(shell pkg-config --cflags cufft)
 LD_FLAGS += $(shell pkg-config --libs cufft)
-
-ifneq (,$(findstring clang,$(CXX)))
-CXX_FLAGS += -Wno-documentation
-endif
 endif
 
 # On demand activation of cudnn support
 ifneq (,$(ETL_CUDNN))
 CXX_FLAGS += -DETL_CUDNN_MODE $(shell pkg-config --cflags cudnn)
 LD_FLAGS += $(shell pkg-config --libs cudnn)
-
-ifneq (,$(findstring clang,$(CXX)))
-CXX_FLAGS += -Wno-documentation
 endif
+
+# On demand activation of egblas support
+ifneq (,$(ETL_EGBLAS))
+CXX_FLAGS += -DETL_EGBLAS_MODE $(shell pkg-config --cflags egblas)
+LD_FLAGS += $(shell pkg-config --libs egblas)
 endif
 
 CPP_FILES=$(wildcard src/*.cpp)

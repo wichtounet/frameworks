@@ -11,26 +11,13 @@
 #include "dll/neural/conv_layer.hpp"
 #include "dll/neural/dense_layer.hpp"
 #include "dll/pooling/mp_layer.hpp"
-#include "dll/dbn.hpp"
-#include "dll/trainer/stochastic_gradient_descent.hpp"
-
-#include "cifar/cifar10_reader.hpp"
-#include "mnist/mnist_utils.hpp"
+#include "dll/test.hpp"
+#include "dll/network.hpp"
+#include "dll/datasets.hpp"
 
 int main(int /*argc*/, char* /*argv*/ []) {
-    auto dataset = cifar::read_dataset_direct<std::vector, etl::fast_dyn_matrix<float, 3, 32, 32>>();
-
-    for (auto& image : dataset.training_images) {
-        for (auto& pixel : image) {
-            pixel *= (1.0 / 255.0);
-        }
-    }
-
-    for (auto& image : dataset.test_images) {
-        for (auto& pixel : image) {
-            pixel *= (1.0 / 255.0);
-        }
-    }
+    // Load the dataset
+    auto dataset = dll::make_cifar10_dataset(0, dll::batch_size<100>{}, dll::scale_pre<255>{});
 
     using dbn_t = dll::dbn_desc<
         dll::dbn_layers<
@@ -40,7 +27,9 @@ int main(int /*argc*/, char* /*argv*/ []) {
             dll::mp_layer_3d_desc<24, 12, 12, 1, 2, 2>::layer_t,
             dll::dense_desc<24 * 6 * 6, 64, dll::activation<dll::function::RELU>>::layer_t,
             dll::dense_desc<64, 10, dll::activation<dll::function::SOFTMAX>>::layer_t>,
-        dll::momentum, dll::batch_size<100>, dll::trainer<dll::sgd_trainer>>::dbn_t;
+        dll::updater<dll::updater_type::MOMENTUM>,
+        dll::batch_size<100>
+        >::dbn_t;
 
     auto dbn = std::make_unique<dbn_t>();
 
@@ -51,11 +40,9 @@ int main(int /*argc*/, char* /*argv*/ []) {
 
     dbn->display();
 
-    auto ft_error = dbn->fine_tune(dataset.training_images, dataset.training_labels, 50);
-    std::cout << "ft_error:" << ft_error << std::endl;
+    dbn->fine_tune(dataset.train(), 50);
 
-    auto test_error = dll::test_set(dbn, dataset.test_images, dataset.test_labels, dll::predictor());
-    std::cout << "test_error:" << test_error << std::endl;
+    dbn->evaluate(dataset.test());
 
     return 0;
 }

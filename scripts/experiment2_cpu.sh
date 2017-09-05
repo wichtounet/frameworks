@@ -14,7 +14,7 @@
 exp=2
 mode=cpu
 
-echo "Starting experiment 1 (CPU)"
+echo "Starting experiment 2 (CPU)"
 
 #  DLL  #
 #########

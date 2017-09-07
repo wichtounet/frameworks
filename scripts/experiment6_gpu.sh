@@ -8,7 +8,7 @@
 #=======================================================================
 
 ######################
-# Experiment 6 (CPU) #
+# Experiment 6 (GPU) #
 ######################
 
 exp=6
@@ -16,23 +16,39 @@ mode=gpu
 
 echo "Starting experiment $exp ($mode)"
 
-#  Caffe  #
-###########
+#  DLL  #
+#########
 
-echo "Starting Caffe"
+echo "Starting DLL"
 
-mkdir -p results/$exp/$mode/caffe
+mkdir -p results/$exp/$mode/dll
 
-cd caffe
+cd dll/
 
-export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
-
+# Set variables for performance
+export DLL_BLAS_PKG=mkl-threads
+export ETL_MKL=true
+export ETL_CUBLAS=true
+export ETL_CUDNN=true
+export ETL_CUFFT=true
+export ETL_EGBLAS=true
+make clean > /dev/null
+make release/bin/experiment6 > /dev/null
 before=`date "+%s"`
-$CAFFE_ROOT/build/tools/caffe train --solver=experiment6_solver_gpu.prototxt | tee ../results/$exp/$mode/caffe/raw_results
+./release/bin/experiment6 | tee ../results/$exp/$mode/dll/raw_results
 after=`date "+%s"`
 echo "Time: $((after - before))"
 
+# Cleanup variables
+unset ETL_EGBLAS
+unset ETL_CUFFT
+unset ETL_CUDNN
+unset ETL_CUBLAS
+unset ETL_MKL
+unset DLL_BLAS_PKG
+
 cd ..
+
 
 #  TF  #
 ########

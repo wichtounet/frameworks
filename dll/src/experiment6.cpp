@@ -15,30 +15,30 @@
 
 int main(int /*argc*/, char* /*argv*/ []) {
     constexpr const char* imagenet_path = "/home/wichtounet/datasets/imagenet_resized/";
-    constexpr size_t B = 128;
+    constexpr size_t B = 103;
 
     // Load the dataset
     auto dataset = dll::make_imagenet_dataset(imagenet_path, 0, dll::batch_size<B>{}, dll::scale_pre<255>{});
 
     using dbn_t = dll::dyn_network_desc<
             dll::dbn_layers<
-                dll::conv_same_desc<3, 256, 256, 16, 3, 3, dll::activation<dll::function::RELU>>::layer_t,
-                dll::mp_layer_3d_desc<16, 256, 256, 1, 2, 2>::layer_t,
+                dll::conv_same_layer<3, 256, 256, 16, 3, 3, dll::relu>,
+                dll::mp_2d_layer<16, 256, 256, 2, 2>,
 
-                dll::conv_same_desc<16, 128, 128, 16, 3, 3, dll::activation<dll::function::RELU>>::layer_t,
-                dll::mp_layer_3d_desc<16, 128, 128, 1, 2, 2>::layer_t,
+                dll::conv_same_layer<16, 128, 128, 16, 3, 3, dll::relu>,
+                dll::mp_2d_layer<16, 128, 128, 2, 2>,
 
-                dll::conv_same_desc<16, 64, 64, 32, 3, 3, dll::activation<dll::function::RELU>>::layer_t,
-                dll::mp_layer_3d_desc<32, 64, 64, 1, 2, 2>::layer_t,
+                dll::conv_same_layer<16, 64, 64, 32, 3, 3, dll::relu>,
+                dll::mp_2d_layer<32, 64, 64, 2, 2>,
 
-                dll::conv_same_desc<32, 32, 32, 32, 3, 3, dll::activation<dll::function::RELU>>::layer_t,
-                dll::mp_layer_3d_desc<32, 32, 32, 1, 2, 2>::layer_t,
+                dll::conv_same_layer<32, 32, 32, 32, 3, 3, dll::relu>,
+                dll::mp_2d_layer<32, 32, 32, 2, 2>,
 
-                dll::conv_same_desc<32, 16, 16, 32, 3, 3, dll::activation<dll::function::RELU>>::layer_t,
-                dll::mp_layer_3d_desc<32, 16, 16, 1, 2, 2>::layer_t,
+                dll::conv_same_layer<32, 16, 16, 32, 3, 3, dll::relu>,
+                dll::mp_2d_layer<32, 16, 16, 2, 2>,
 
-                dll::dense_desc<2048, 2048, dll::activation<dll::function::RELU>>::layer_t,
-                dll::dense_desc<2048, 1000, dll::activation<dll::function::SOFTMAX>>::layer_t
+                dll::dense_layer<2048, 2048, dll::relu>,
+                dll::dense_layer<2048, 1000, dll::relu>
             >,
             dll::batch_size<B>,
             dll::updater<dll::updater_type::MOMENTUM>,

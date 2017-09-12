@@ -28,9 +28,7 @@ cd dll/
 # Set variables for performance
 export DLL_BLAS_PKG=mkl-threads
 export ETL_MKL=true
-export ETL_CUBLAS=true
-export ETL_CUDNN=true
-export ETL_CUFFT=true
+export ETL_GPU=true
 export ETL_EGBLAS=true
 make clean > /dev/null
 make release/bin/experiment6 > /dev/null
@@ -41,9 +39,7 @@ echo "Time: $((after - before))"
 
 # Cleanup variables
 unset ETL_EGBLAS
-unset ETL_CUFFT
-unset ETL_CUDNN
-unset ETL_CUBLAS
+unset ETL_GPU
 unset ETL_MKL
 unset DLL_BLAS_PKG
 

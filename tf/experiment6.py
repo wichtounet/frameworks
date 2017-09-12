@@ -186,7 +186,7 @@ def main(_):
 
                 print('batch {}/{} loss: {} accuracy: {} duration: {}ms'.format(int(current_index / batch_size), int(nice_n / batch_size), batch_loss, batch_accuracy, 1000 * (end_time - start_time)), flush = True)
 
-            print('epoch {}/{}'.format(epoch, num_epoch))
+            print('epoch {}/{}'.format(epoch, num_epochs))
 
         # Finally print the result!
 

@@ -21,12 +21,13 @@ int main(int /*argc*/, char* /*argv*/ []) {
 
     using dbn_t = dll::dbn_desc<
         dll::dbn_layers<
-            dll::conv_desc<3, 32, 32, 12, 5, 5, dll::activation<dll::function::RELU>>::layer_t,
-            dll::mp_layer_3d_desc<12, 28, 28, 1, 2, 2>::layer_t,
-            dll::conv_desc<12, 14, 14, 24, 3, 3, dll::activation<dll::function::RELU>>::layer_t,
-            dll::mp_layer_3d_desc<24, 12, 12, 1, 2, 2>::layer_t,
-            dll::dense_desc<24 * 6 * 6, 64, dll::activation<dll::function::RELU>>::layer_t,
-            dll::dense_desc<64, 10, dll::activation<dll::function::SOFTMAX>>::layer_t>,
+            dll::conv_layer<3, 32, 32, 12, 5, 5, dll::relu>,
+            dll::mp_3d_layer<12, 28, 28, 1, 2, 2>,
+            dll::conv_layer<12, 14, 14, 24, 3, 3, dll::relu>,
+            dll::mp_3d_layer<24, 12, 12, 1, 2, 2>,
+            dll::dense_layer<24 * 6 * 6, 64, dll::relu>,
+            dll::dense_layer<64, 10, dll::softmax>
+        >,
         dll::updater<dll::updater_type::MOMENTUM>,
         dll::batch_size<100>
         >::dbn_t;

@@ -23,7 +23,6 @@ import tensorflow as tf
 
 batch_size = 128
 batches = 10009
-EVAL_FREQUENCY = 10009  # Number of steps between evaluations.
 num_epochs = 5
 num_classes = 1000
 

@@ -15,7 +15,7 @@
 
 int main(int /*argc*/, char* /*argv*/ []) {
     constexpr const char* imagenet_path = "/home/wichtounet/datasets/imagenet_resized/";
-    constexpr size_t B = 103;
+    constexpr size_t B = 128;
 
     // Load the dataset
     auto dataset = dll::make_imagenet_dataset(imagenet_path, 0, dll::batch_size<B>{}, dll::scale_pre<255>{});

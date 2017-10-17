@@ -1,6 +1,5 @@
 package wicht;
 
-import org.deeplearning4j.berkeley.Pair;
 import org.nd4j.linalg.factory.Nd4j;
 import org.deeplearning4j.datasets.fetchers.MnistDataFetcher;
 import org.deeplearning4j.nn.conf.layers.RBM;
@@ -54,7 +53,7 @@ public class experiment3 {
             //.backprop(false)
             .build();
 
-        int numParams = conf.getLayer().initializer().numParams(conf, true);
+        int numParams = conf.getLayer().initializer().numParams(conf);
         INDArray params = Nd4j.create(1, numParams);
         Layer layer = conf.getLayer().instantiate(conf, null, 0, params, true);
 
@@ -72,13 +71,14 @@ public class experiment3 {
                 DataSet next = mnistTrain.next();
 
                 INDArray v0 = next.getFeatureMatrix();
-                Pair<INDArray, INDArray> h0 = rbm.sampleHiddenGivenVisible(v0);
+                // TODO Restore
+                /*Pair<INDArray, INDArray> h0 = rbm.sampleHiddenGivenVisible(v0);
                 Pair<INDArray, INDArray> v1 = rbm.sampleVisibleGivenHidden(h0.getFirst());
 
                 v0.subi(v1.getFirst());
                 INDArray error = v0.mul(v0);
 
-                d1 += (Double) error.meanNumber();
+                d1 += (Double) error.meanNumber();*/
             }
 
             d1 /= 600.0;
@@ -106,7 +106,8 @@ public class experiment3 {
                 while(mnistTrain.hasNext()){
                     DataSet next = mnistTrain.next();
 
-                    INDArray v0 = next.getFeatureMatrix();
+                    // TODO Restore
+                    /*INDArray v0 = next.getFeatureMatrix();
                     Pair<INDArray, INDArray> h0 = rbm.sampleHiddenGivenVisible(v0);
                     Pair<INDArray, INDArray> v1 = rbm.sampleVisibleGivenHidden(h0.getFirst());
 
@@ -114,6 +115,7 @@ public class experiment3 {
                     INDArray error = v0.mul(v0);
 
                     d1 += (Double) error.meanNumber();
+                    */
                 }
 
                 d1 /= 600.0;

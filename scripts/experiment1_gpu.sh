@@ -10,6 +10,8 @@
 # Configuration
 export CAFFE_ROOT="/home/wichtounet/dev/caffe"
 export TORCH_ACTIVATE="/home/wichtounet/torch/install/bin/torch-activate"
+export BLAS_LIB="/opt/intel/mkl/lib/intel64/"
+export PATH="$BLAS_LIB:$PATH"
 
 ######################
 # Experiment 1 (GPU) #
@@ -100,6 +102,7 @@ mkdir -p results/$exp/$mode/dl4j
 
 cd dl4j
 
+export PATH="$BLAS_LIB:$PATH"
 export DL4J_MODE=cuda-8.0
 mvn clean install > /dev/null
 

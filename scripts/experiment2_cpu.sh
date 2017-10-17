@@ -7,8 +7,11 @@
 #  http://opensource.org/licenses/MIT)
 #=======================================================================
 
+# Configuration
+export CAFFE_ROOT="/home/wichtounet/dev/caffe"
+
 ######################
-# Experiment 1 (CPU) #
+# Experiment 2 (CPU) #
 ######################
 
 exp=2
@@ -112,8 +115,6 @@ echo "Starting Caffe"
 mkdir -p results/$exp/$mode/caffe
 
 cd caffe
-
-export CAFFE_ROOT="/home/wichtounet/dev/caffe-cpu"
 
 before=`date "+%s"`
 $CAFFE_ROOT/build/tools/caffe train --solver=experiment2_solver.prototxt | tee ../results/$exp/$mode/caffe/raw_results

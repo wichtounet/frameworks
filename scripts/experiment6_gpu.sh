@@ -7,6 +7,9 @@
 #  http://opensource.org/licenses/MIT)
 #=======================================================================
 
+# Configuration
+export CAFFE_ROOT="/home/wichtounet/dev/caffe"
+
 ######################
 # Experiment 6 (GPU) #
 ######################
@@ -16,35 +19,21 @@ mode=gpu
 
 echo "Starting experiment $exp ($mode)"
 
-#  DLL  #
-#########
+#  Caffe  #
+###########
 
-echo "Starting DLL"
+echo "Starting Caffe"
 
-mkdir -p results/$exp/$mode/dll
+mkdir -p results/$exp/$mode/caffe
 
-cd dll/
+cd caffe
 
-# Set variables for performance
-export DLL_BLAS_PKG=mkl-threads
-export ETL_MKL=true
-export ETL_GPU=true
-export ETL_EGBLAS=true
-make clean > /dev/null
-make release/bin/experiment6 > /dev/null
 before=`date "+%s"`
-./release/bin/experiment6 | tee ../results/$exp/$mode/dll/raw_results
+$CAFFE_ROOT/build/tools/caffe train --solver=experiment6_solver_gpu.prototxt | tee ../results/$exp/$mode/caffe/raw_results
 after=`date "+%s"`
 echo "Time: $((after - before))"
 
-# Cleanup variables
-unset ETL_EGBLAS
-unset ETL_GPU
-unset ETL_MKL
-unset DLL_BLAS_PKG
-
 cd ..
-
 
 #  TF  #
 ########

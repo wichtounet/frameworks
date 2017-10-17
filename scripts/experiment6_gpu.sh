@@ -9,6 +9,7 @@
 
 # Configuration
 export CAFFE_ROOT="/home/wichtounet/dev/caffe"
+export TORCH_ACTIVATE="/home/wichtounet/torch/install/bin/torch-activate"
 
 ######################
 # Experiment 6 (GPU) #
@@ -107,7 +108,7 @@ mkdir -p results/$exp/$mode/torch
 
 cd torch
 
-source ~/torch/install/bin/torch-activate
+source $TORCH_ACTIVATE
 
 before=`date "+%s"`
 th experiment6_gpu.lua | tee ../results/$exp/$mode/torch/raw_results

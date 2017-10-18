@@ -197,10 +197,9 @@ def main(_):
         # fetch some extra nodes' data
         l, predictions = sess.run([loss, train_prediction], feed_dict=feed_dict)
         print('Epoch %.2f Minibatch loss: %.3f Train error: %.1f%%' %
-              (float(step) * BATCH_SIZE / train_size, l, error_rate(eval_in_batches(train_data, sess), train_labels)))
-        sys.stdout.flush()
+              (float(step) * BATCH_SIZE / train_size, l, error_rate(eval_in_batches(train_data, sess), train_labels)), flush = True)
     # Finally print the result!
     test_error = error_rate(eval_in_batches(test_data, sess), test_labels)
-    print('Test error: %.1f%%' % test_error)
+    print('Test error: %.1f%%' % test_error, flush = True)
 
 tf.app.run(main=main, argv=[sys.argv[0]])

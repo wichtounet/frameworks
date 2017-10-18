@@ -12,31 +12,11 @@ export CAFFE_ROOT="/home/wichtounet/dev/caffe"
 export TORCH_ACTIVATE="/home/wichtounet/torch/install/bin/torch-activate"
 export BLAS_LIB="/opt/intel/mkl/lib/intel64/"
 export PATH="$BLAS_LIB:$PATH"
+export TF_ACTIVATE="/home/wichtounet/.virtualenvs/tf1.3/bin/activate"
 
 ######################
 # Experiment 6 (GPU) #
 ######################
-
-exp=6
-mode=gpu
-
-echo "Starting experiment $exp ($mode)"
-
-#  Caffe  #
-###########
-
-echo "Starting Caffe"
-
-mkdir -p results/$exp/$mode/caffe
-
-cd caffe
-
-before=`date "+%s"`
-$CAFFE_ROOT/build/tools/caffe train --solver=experiment6_solver_gpu.prototxt | tee ../results/$exp/$mode/caffe/raw_results
-after=`date "+%s"`
-echo "Time: $((after - before))"
-
-cd ..
 
 #  TF  #
 ########
@@ -47,7 +27,7 @@ mkdir -p results/$exp/$mode/tf
 
 cd tf
 
-source ~/.virtualenvs/tf2/bin/activate
+source $TF_ACTIVATE
 
 before=`date "+%s"`
 CUDA_VISIBLE_DEVICES=0 python experiment6.py | tee ../results/$exp/$mode/tf/raw_results

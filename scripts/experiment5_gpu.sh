@@ -12,6 +12,7 @@ export CAFFE_ROOT="/home/wichtounet/dev/caffe"
 export TORCH_ACTIVATE="/home/wichtounet/torch/install/bin/torch-activate"
 export BLAS_LIB="/opt/intel/mkl/lib/intel64/"
 export PATH="$BLAS_LIB:$PATH"
+export TF_ACTIVATE="/home/wichtounet/.virtualenvs/tf1.3/bin/activate"
 
 ######################
 # Experiment 5 (GPU) #
@@ -64,7 +65,7 @@ mkdir -p results/$exp/$mode/tf
 
 cd tf
 
-source ~/.virtualenvs/tf2/bin/activate
+source $TF_ACTIVATE
 
 before=`date "+%s"`
 CUDA_VISIBLE_DEVICES=0 python experiment5.py | tee ../results/$exp/$mode/tf/raw_results

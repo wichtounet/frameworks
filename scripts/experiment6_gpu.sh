@@ -18,6 +18,27 @@ export TF_ACTIVATE="/home/wichtounet/.virtualenvs/tf1.3/bin/activate"
 # Experiment 6 (GPU) #
 ######################
 
+exp=6
+mode=gpu
+
+echo "Starting experiment $exp ($mode)"
+
+#  Caffe  #
+###########
+
+echo "Starting Caffe"
+
+mkdir -p results/$exp/$mode/caffe
+
+cd caffe
+
+before=`date "+%s"`
+$CAFFE_ROOT/build/tools/caffe train --solver=experiment6_solver_gpu.prototxt | tee ../results/$exp/$mode/caffe/raw_results
+after=`date "+%s"`
+echo "Time: $((after - before))"
+
+cd ..
+
 #  TF  #
 ########
 

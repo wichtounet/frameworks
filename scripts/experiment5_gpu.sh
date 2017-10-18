@@ -13,6 +13,7 @@ export TORCH_ACTIVATE="/home/wichtounet/torch/install/bin/torch-activate"
 export BLAS_LIB="/opt/intel/mkl/lib/intel64/"
 export PATH="$BLAS_LIB:$PATH"
 export TF_ACTIVATE="/home/wichtounet/.virtualenvs/tf1.3/bin/activate"
+export KERAS_ACTIVATE="/home/wichtounet/.virtualenvs/tf1.3/bin/activate"
 
 ######################
 # Experiment 5 (GPU) #
@@ -85,7 +86,7 @@ mkdir -p results/$exp/$mode/keras
 
 cd keras
 
-source ~/.virtualenvs/tf2/bin/activate
+source $KERAS_ACTIVATE
 
 before=`date "+%s"`
 CUDA_VISIBLE_DEVICES=0 python experiment5.py | tee ../results/$exp/$mode/keras/raw_results

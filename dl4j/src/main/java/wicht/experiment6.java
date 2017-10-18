@@ -10,6 +10,7 @@ import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
+import org.deeplearning4j.nn.conf.WorkspaceMode;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.*;
@@ -34,7 +35,6 @@ public class experiment6 {
         int outputNum = 1000; // The number of possible outcomes
         int batchSize = 64; // Test batch size
         int numEpochs = 10; // Number of training epochs
-        int iterations = 1; // Number of training iterations
 
         /*
             Create an iterator using the batch size for one iteration
@@ -46,10 +46,11 @@ public class experiment6 {
         ImageRecordReader recordReader = new ImageRecordReader(256,256,nChannels,labelMaker);
         recordReader.initialize(new FileSplit(parentDir));
 
-        DataSetIterator dataIter = new RecordReaderDataSetIterator(recordReader,batchSize,-1,outputNum);
+        DataSetIterator dataIter = new RecordReaderDataSetIterator(recordReader,batchSize);
 
         log.info("Build model....");
         MultiLayerConfiguration.Builder builder = new NeuralNetConfiguration.Builder()
+                .trainingWorkspaceMode(WorkspaceMode.SINGLE)
                 .iterations(1)
                 .regularization(false)
                 .learningRate(0.01)
@@ -91,22 +92,12 @@ public class experiment6 {
         for( int i=0; i<numEpochs; i++ ){
             log.info("Epoch " + i);
             model.fit(dataIter);
-
-            // We need the train error after each epoch
-
-            dataIter.reset();
         }
 
         // After training, we need the test error
 
         log.info("Evaluate model....");
-        Evaluation eval = new Evaluation(outputNum); //create an evaluation object with 10 possible classes
-        while(dataIter.hasNext()){
-            DataSet next = dataIter.next();
-            INDArray output = model.output(next.getFeatureMatrix()); //get the networks prediction
-            eval.eval(next.getLabels(), output); //check the prediction against the true class
-        }
-
+        Evaluation eval = model.evaluate(dataIter);
         log.info(eval.stats());
     }
 }

@@ -13,6 +13,7 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.nn.conf.WorkspaceMode;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -36,13 +37,13 @@ public class experiment5 {
 
         log.info("Build model....");
         MultiLayerConfiguration.Builder builder = new NeuralNetConfiguration.Builder()
+                .trainingWorkspaceMode(WorkspaceMode.SINGLE)
                 .iterations(1)
                 .regularization(false)
                 .learningRate(0.001)
                 .weightInit(WeightInit.XAVIER)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .updater(Updater.NESTEROVS)
-                .momentum(0.9)
+                .updater(Updater.NESTEROVS).momentum(0.9)
                 .list()
                 .layer(0, new ConvolutionLayer.Builder(5, 5)
                         .nIn(3)
@@ -80,33 +81,15 @@ public class experiment5 {
         for( int i=0; i<50; i++ ){
             log.info("Epoch " + i);
             model.fit(trainIt);
-
-            // We need the train error after each epoch
-
             trainIt.reset();
 
-            Evaluation eval = new Evaluation(10);
-            while(trainIt.hasNext()){
-                DataSet next = trainIt.next();
-                INDArray output = model.output(next.getFeatureMatrix());
-                eval.eval(next.getLabels(), output);
-            }
-
+            Evaluation eval = model.evaluate(trainIt);
             log.info("Train accuracy:" + eval.accuracy());
-
             trainIt.reset();
         }
-
-        // After training, we need the test error
 
         log.info("Evaluate model....");
-        Evaluation eval = new Evaluation(10);
-        while(testIt.hasNext()){
-            DataSet next = testIt.next();
-            INDArray output = model.output(next.getFeatureMatrix());
-            eval.eval(next.getLabels(), output);
-        }
-
-        log.info(eval.stats());
+        Evaluation eval = model.evaluate(testIt);
+        log.info("Test accuracy:" + eval.accuracy());
     }
 }

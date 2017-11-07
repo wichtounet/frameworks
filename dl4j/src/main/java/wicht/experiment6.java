@@ -33,7 +33,7 @@ public class experiment6 {
     public static void main(String[] args) throws Exception {
         int nChannels = 3; // Number of input channels
         int outputNum = 1000; // The number of possible outcomes
-        int batchSize = 64; // Test batch size
+        int batchSize = 16; // Test batch size
         int numEpochs = 10; // Number of training epochs
 
         /*
@@ -46,7 +46,7 @@ public class experiment6 {
         ImageRecordReader recordReader = new ImageRecordReader(256,256,nChannels,labelMaker);
         recordReader.initialize(new FileSplit(parentDir));
 
-        DataSetIterator dataIter = new RecordReaderDataSetIterator(recordReader,batchSize);
+        DataSetIterator dataIter = new RecordReaderDataSetIterator(recordReader,batchSize, 1, 1000);
 
         log.info("Build model....");
         MultiLayerConfiguration.Builder builder = new NeuralNetConfiguration.Builder()

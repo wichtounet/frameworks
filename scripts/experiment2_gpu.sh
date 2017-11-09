@@ -113,7 +113,7 @@ mvn clean install > /dev/null
 cd target/classes
 
 before=`date "+%s"`
-java -cp ../ihatejava-0.7-SNAPSHOT-bin.jar wicht.experiment2 | tee ../results/$exp/$mode/dl4j/raw_results
+java -cp ../ihatejava-0.7-SNAPSHOT-bin.jar wicht.experiment2 | tee ../../results/$exp/$mode/dl4j/raw_results
 after=`date "+%s"`
 echo "Time: $((after - before))"
 

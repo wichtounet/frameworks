@@ -18,9 +18,9 @@ int main(int /*argc*/, char* /*argv*/ []) {
     constexpr size_t B = 128;
 
     // Load the dataset
-    auto dataset = dll::make_imagenet_dataset(imagenet_path, 0, dll::batch_size<B>{}, dll::scale_pre<255>{});
+    auto dataset = dll::make_imagenet_dataset(imagenet_path, dll::batch_size<B>{}, dll::scale_pre<255>{});
 
-    using dbn_t = dll::dyn_network_desc<
+    using dbn_t = dll::network_desc<
             dll::dbn_layers<
                 dll::conv_same_layer<3, 256, 256, 16, 3, 3, dll::relu>,
                 dll::mp_2d_layer<16, 256, 256, 2, 2>,

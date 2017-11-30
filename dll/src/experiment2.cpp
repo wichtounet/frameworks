@@ -20,7 +20,7 @@
 
 int main(int /*argc*/, char* /*argv*/ []) {
     // Load the dataset
-    auto dataset = dll::make_mnist_dataset(0, dll::batch_size<100>{}, dll::binarize_pre<30>{});
+    auto dataset = dll::make_mnist_dataset(dll::batch_size<100>{}, dll::binarize_pre<30>{});
 
     using dbn_t = dll::dbn_desc<
         dll::dbn_layers<

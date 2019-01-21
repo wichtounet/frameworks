@@ -48,7 +48,7 @@ training_labels = [training_labels[index] for index in perm]
 print("Data is ready...")
 
 def get_batch():
-    index = 1
+    index = 0
 
     global current_index
 

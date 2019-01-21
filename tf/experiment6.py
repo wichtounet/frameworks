@@ -37,7 +37,7 @@ def data_type():
     return tf.float32
 
 def get_batch():
-    index = 1
+    index = 0
 
     global current_index
     global training_images
